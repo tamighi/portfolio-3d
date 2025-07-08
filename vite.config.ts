@@ -5,6 +5,7 @@ import path from "path";
 
 // https://vite.dev/config/
 export default defineConfig({
+  assetsInclude: ["**/*.exr", "**/*.hdr", "**/*.glb", "**/*.gltf"],
   plugins: [react(), tailwindcss()],
   resolve: {
     alias: {

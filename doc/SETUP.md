@@ -51,3 +51,46 @@ npm i -D path
 ```
 
 ## ThreeJS
+
+```sh
+npm i @react-three/drei @react-three/fiber three r3f-perf leva
+npm i -D @types/three
+```
+
+```ts filename="vite.config.ts"
+export default defineConfig({
+  assetsInclude: ["**/*.exr", "**/*.hdr", "**/*.glb", "**/*.gltf"],
+});
+```
+
+```ts filename="vite-env.d.ts"
+declare module "*.frag" {
+    const src: string;
+    export default src;
+}
+
+declare module "*.vert" {
+    const src: string;
+    export default src;
+}
+
+declare module "*.gltf" {
+    const src: string;
+    export default src;
+}
+
+declare module "*.glb" {
+    const src: string;
+    export default src;
+}
+
+declare module "*.exr" {
+    const src: string;
+    export default src;
+}
+
+declare module "*.hdr" {
+    const src: string;
+    export default src;
+}
+```
