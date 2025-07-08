@@ -6,7 +6,7 @@
 npm create vite@latest
 rimraf eslint.config.js
 npm uninstall @eslint/js eslint-plugin-react-hooks eslint-plugin-react-refresh typescript-eslint
-npm install prettier
+npm i -D prettier
 ```
 
 ## Tailwind
@@ -30,5 +30,24 @@ export default defineConfig({
 ```
 
 ## TS imports
+
+```sh
+npm i -D path
+```
+
+```json filename="tsconfig.json"
+ {
+   "compilerOptions": {
+     "baseUrl": ".",
+     "paths": {
+       "@/*": ["src/*"]
+     }
+   }
+ }
+```
+
+```ts filename="vite.config.ts"
+
+```
 
 ## ThreeJS
