@@ -1,9 +1,10 @@
 import fragment from "@/assets/shaders/grass-fragment-shader.glsl";
 import vertex from "@/assets/shaders/grass-vertex-shader.glsl";
+import { useFrame } from "@react-three/fiber";
 import React from "react";
 import * as THREE from "three";
 
-const NUM_GRASS = 1024 * 16;
+const NUM_GRASS = 16 * 1024;
 const GRASS_SEGMENTS = 6;
 const GRASS_VERTICES = (GRASS_SEGMENTS + 1) * 2;
 const GRASS_PATCH_SIZE = 25;
@@ -48,26 +49,31 @@ const createGrassGeometry = () => {
 const Grass = () => {
   const geometry = React.useMemo(() => createGrassGeometry(), []);
 
+  const uniforms = React.useMemo(
+    () => ({
+      grassHeight: { value: GRASS_HEIGHT },
+      grassWidth: { value: GRASS_WIDTH },
+      grassVertices: { value: GRASS_VERTICES },
+      grassSegments: { value: GRASS_SEGMENTS },
+      grassPatchSize: { value: GRASS_PATCH_SIZE },
+      time: { value: 0 },
+    }),
+    [],
+  );
+
+  const materialRef = React.useRef<THREE.ShaderMaterial>(null);
+
+  useFrame((state) => {
+    if (materialRef.current) {
+      materialRef.current.uniforms.time.value = state.clock.getElapsedTime();
+    }
+  });
+
   return (
     <mesh geometry={geometry}>
       <shaderMaterial
-        uniforms={{
-          grassHeight: {
-            value: GRASS_HEIGHT,
-          },
-          grassWidth: {
-            value: GRASS_WIDTH,
-          },
-          grassVertices: {
-            value: GRASS_VERTICES,
-          },
-          grassSegments: {
-            value: GRASS_SEGMENTS,
-          },
-          grassPatchSize: {
-            value: GRASS_PATCH_SIZE,
-          },
-        }}
+        ref={materialRef}
+        uniforms={uniforms}
         vertexShader={vertex}
         fragmentShader={fragment}
         side={THREE.FrontSide}
@@ -77,3 +83,4 @@ const Grass = () => {
 };
 
 export default Grass;
+Grass;

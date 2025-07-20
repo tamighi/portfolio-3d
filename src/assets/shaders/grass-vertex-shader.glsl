@@ -5,8 +5,11 @@ uniform float grassWidth;
 uniform float grassVertices;
 uniform float grassSegments;
 uniform float grassPatchSize;
+uniform float time;
 
 varying vec3 vColor;
+varying vec3 vNormal;
+varying vec3 vWorldPosition;
 varying vec4 vGrassData;
 
 // The MIT License
@@ -80,6 +83,18 @@ mat3 rotateY(float theta) {
     );
 }
 
+mat3 rotateAxis(vec3 axis, float angle) {
+    float s = sin(angle);
+    float c = cos(angle);
+    float oc = 1.0 - c;
+
+    return mat3(
+        oc * axis.x * axis.x + c, oc * axis.x * axis.y - axis.z * s, oc * axis.z * axis.x + axis.y * s,
+        oc * axis.x * axis.y + axis.z * s, oc * axis.y * axis.y + c, oc * axis.y * axis.z - axis.x * s,
+        oc * axis.z * axis.x - axis.y * s, oc * axis.y * axis.z + axis.x * s, oc * axis.z * axis.z + c
+    );
+}
+
 const vec3 BASE_COLOR = vec3(0.1, 0.4, 0.04);
 const vec3 TIP_COLOR = vec3(0.5, 0.7, 0.3);
 
@@ -121,7 +136,15 @@ void main() {
     float z = 0.0;
 
     // Lean factor
-    float leanFactor = remap(hashVal.y, -1.0, 1.0, 0.0, 0.75);
+    float windStrength = noise(vec3(grassBladeWorldPos.xz * 0.05, 0.0) + time);
+    float windAngle = 0.0;
+    vec3 windAxis = vec3(cos(windAngle), 0.0, sin(windAngle));
+    float windLeanAngle = windStrength * 1.5 * heightPercentage;
+
+    float randomLeanAnimation = noise(
+            vec3(grassBladeWorldPos.xz, time * 4.0)) * (windStrength * 0.5 + 0.125);
+
+    float leanFactor = remap(hashVal.y, -1.0, 1.0, -0.5, 0.5) + randomLeanAnimation;
 
     // Bending
     vec3 p1 = vec3(0.0);
@@ -130,13 +153,24 @@ void main() {
     vec3 p4 = vec3(0.0, cos(leanFactor), sin(leanFactor));
     vec3 curve = bezier(p1, p2, p3, p4, heightPercentage);
 
+    // Normal
+    vec3 curveGrad = bezierGrad(p1, p2, p3, p4, heightPercentage);
+    mat2 curveRot90 = mat2(0.0, 1.0, -1.0, 0.0) * -zSide;
+
     y = curve.y * height;
     z = curve.z * height;
 
     // Grass matrix
-    mat3 grassMat = rotateY(angle);
+    mat3 grassMat = rotateAxis(windAxis, windLeanAngle) * rotateY(angle);
 
     vec3 grassLocalPosition = grassMat * vec3(x, y, z) + grassOffset;
+    vec3 grassLocalNormal = grassMat * vec3(0.0, curveRot90 * curveGrad.yz);
+
+    // Blend normal
+    float distanceBlend = smoothstep(
+            0.0, 10.0, distance(cameraPosition, grassBladeWorldPos));
+    grassLocalNormal = mix(grassLocalNormal, vec3(0.0, 1.0, 0.0), distanceBlend * 0.5);
+    grassLocalNormal = normalize(grassLocalNormal);
 
     gl_Position = projectionMatrix * modelViewMatrix * vec4(grassLocalPosition, 1.0);
 
@@ -144,8 +178,10 @@ void main() {
     vec3 c1 = mix(BASE_COLOR, TIP_COLOR, heightPercentage);
     vec3 c2 = mix(vec3(0.6, 0.6, 0.4), vec3(0.88, 0.87, 0.52), heightPercentage);
     float noiseValue = noise(grassBladeWorldPos * 0.1);
-    vColor = mix(c1, c2, smoothstep(-1.0, 1.0, noiseValue));
 
+    vColor = mix(c1, c2, smoothstep(-1.0, 1.0, noiseValue));
+    vNormal = normalize((modelMatrix * vec4(grassLocalNormal, 0.0)).xyz);
+    vWorldPosition = (modelMatrix * vec4(grassLocalPosition, 1.0)).xyz;
     vGrassData = vec4(x, 0.0, 0.0, 0.0);
 }
 
