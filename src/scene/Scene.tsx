@@ -1,13 +1,11 @@
 import { OrbitControls } from "@react-three/drei";
+import Sky from "./sky/Sky";
 
 const Scene = () => {
   return (
     <scene>
       <OrbitControls makeDefault />
-      <mesh>
-        <boxGeometry />
-        <meshStandardMaterial />
-      </mesh>
+      <Sky />
     </scene>
   );
 };
