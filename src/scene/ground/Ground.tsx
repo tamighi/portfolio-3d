@@ -1,5 +1,5 @@
-import fragment from "@/assets/shaders/ground-fragment-shader.glsl?raw";
-import vertex from "@/assets/shaders/ground-vertex-shader.glsl?raw";
+import fragment from "@/assets/shaders/ground-fragment-shader.glsl";
+import vertex from "@/assets/shaders/ground-vertex-shader.glsl";
 import textureUrl from "@/assets/textures/grid.png";
 import { useTexture } from "@react-three/drei";
 import { useEffect, useRef } from "react";

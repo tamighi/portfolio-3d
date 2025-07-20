@@ -3,6 +3,7 @@ import { useThree } from "@react-three/fiber";
 import { useEffect } from "react";
 import Ground from "./ground/Ground";
 import Sky from "./sky/Sky";
+import Grass from "./grass/Grass";
 
 const useCameraSetup = () => {
   const { camera } = useThree();
@@ -21,6 +22,7 @@ const Scene = () => {
     <scene>
       <OrbitControls makeDefault />
       <Ground />
+      <Grass />
       <Sky />
     </scene>
   );
