@@ -4,7 +4,7 @@ The first version of the grass will have less constraints to be available quicke
 
 Will be designed in shaders (not blender).
 
-[SimonDev grass tutorial](https://www.youtube.com/watch?v=bp7REZBV4P4)
+[SimonDev grass tutorial](https://www.youtube.com/watch?v=bp7REZBV4P4)  
 [Procedural Grass in 'Ghost of Tsushima'](https://www.youtube.com/watch?v=bp7REZBV4P4)
 
 ## Requirements
