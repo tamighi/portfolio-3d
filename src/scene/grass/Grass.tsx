@@ -3,16 +3,14 @@ import vertex from "@/assets/shaders/grass-vertex-shader.glsl";
 import React from "react";
 import * as THREE from "three";
 
-const NUM_GRASS = 4;
+const NUM_GRASS = 1024 * 16;
 const GRASS_SEGMENTS = 6;
 const GRASS_VERTICES = (GRASS_SEGMENTS + 1) * 2;
-const GRASS_PATCH_SIZE = 10;
+const GRASS_PATCH_SIZE = 25;
 const GRASS_WIDTH = 0.25;
 const GRASS_HEIGHT = 2;
 
-const createGeometry = () => {
-  const VERTICES = (GRASS_SEGMENTS + 1) * 2;
-
+const createGrassGeometry = () => {
   const indices = [];
   for (let i = 0; i < GRASS_SEGMENTS; i++) {
     const vi = i * 2;
@@ -24,7 +22,7 @@ const createGeometry = () => {
     indices[i * 12 + 4] = vi + 1;
     indices[i * 12 + 5] = vi + 3;
 
-    const fi = VERTICES + vi;
+    const fi = GRASS_VERTICES + vi;
 
     indices[i * 12 + 6] = fi + 2;
     indices[i * 12 + 7] = fi + 1;
@@ -35,31 +33,23 @@ const createGeometry = () => {
     indices[i * 12 + 11] = fi + 2;
   }
 
-  return indices;
+  const geo = new THREE.InstancedBufferGeometry();
+
+  geo.boundingSphere = new THREE.Sphere(
+    new THREE.Vector3(0, 0, 0),
+    1 * GRASS_PATCH_SIZE * 2,
+  );
+  geo.instanceCount = NUM_GRASS;
+  geo.setIndex(indices);
+
+  return geo;
 };
 
 const Grass = () => {
-  const geoRef = React.useRef<THREE.InstancedBufferGeometry>(null);
-
-  const indices = React.useMemo(() => createGeometry(), []);
-  const boundingSphere = React.useMemo(
-    () =>
-      new THREE.Sphere(new THREE.Vector3(0, 0, 0), 1 * GRASS_PATCH_SIZE * 2),
-    [],
-  );
-
-  React.useEffect(() => {
-    geoRef.current?.setIndex(indices);
-  }, [geoRef]);
+  const geometry = React.useMemo(() => createGrassGeometry(), []);
 
   return (
-    <mesh>
-      <instancedBufferGeometry
-        ref={geoRef}
-        boundingSphere={boundingSphere}
-        instanceCount={NUM_GRASS}
-      />
-
+    <mesh geometry={geometry}>
       <shaderMaterial
         uniforms={{
           grassHeight: {
@@ -73,6 +63,9 @@ const Grass = () => {
           },
           grassSegments: {
             value: GRASS_SEGMENTS,
+          },
+          grassPatchSize: {
+            value: GRASS_PATCH_SIZE,
           },
         }}
         vertexShader={vertex}

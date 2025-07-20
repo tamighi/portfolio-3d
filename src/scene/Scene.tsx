@@ -9,7 +9,7 @@ const useCameraSetup = () => {
   const { camera } = useThree();
 
   useEffect(() => {
-    camera.position.set(-5, 10, 0);
+    camera.position.set(-5, 10, -2);
     camera.lookAt(0, 0, 0);
     camera.updateProjectionMatrix();
   }, [camera]);

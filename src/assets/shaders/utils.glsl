@@ -7,8 +7,13 @@ float remap(float v, float inMin, float inMax, float outMin, float outMax) {
     return mix(outMin, outMax, t);
 }
 
-float hash(vec2 p)
-{
-    p = 50.0 * fract(p * 0.3183099 + vec2(0.71, 0.113));
-    return -1.0 + 2.0 * fract(p.x * p.y * (p.x + p.y));
+float easeOut(float x, float t) {
+    return 1.0 - pow(1.0 - x, t);
+}
+
+vec3 bezier(vec3 P0, vec3 P1, vec3 P2, vec3 P3, float t) {
+    return (1.0 - t) * (1.0 - t) * (1.0 - t) * P0 +
+        3.0 * (1.0 - t) * (1.0 - t) * t * P1 +
+        3.0 * (1.0 - t) * t * t * P2 +
+        t * t * t * P3;
 }

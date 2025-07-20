@@ -6,6 +6,12 @@ varying vec2 vUv;
 
 uniform sampler2D diffuseTexture;
 
+float hash(vec2 p)
+{
+    p = 50.0 * fract(p * 0.3183099 + vec2(0.71, 0.113));
+    return -1.0 + 2.0 * fract(p.x * p.y * (p.x + p.y));
+}
+
 void main() {
     float grid1 = texture(diffuseTexture, vWorldPosition.xz * 0.1).r;
     float grid2 = texture(diffuseTexture, vWorldPosition.xz * 1.0).r;
