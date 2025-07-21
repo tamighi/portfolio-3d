@@ -54,43 +54,20 @@ npm i -D path
 
 ```sh
 npm i @react-three/drei @react-three/fiber three r3f-perf leva
-npm i -D @types/three
+npm i -D @types/three vite-plugin-glsl
 ```
 
+Allowing glsl file imports:
+```ts filename="vite-env.d.ts"
+declare module "*.glsl" {
+  const src: string;
+  export default src;
+}
+```
+
+Enable glsl plugin to include other files in glsl files
 ```ts filename="vite.config.ts"
 export default defineConfig({
-  assetsInclude: ["**/*.exr", "**/*.hdr", "**/*.glb", "**/*.gltf"],
+  plugins: [glsl()]
 });
-```
-
-```ts filename="vite-env.d.ts"
-declare module "*.frag" {
-    const src: string;
-    export default src;
-}
-
-declare module "*.vert" {
-    const src: string;
-    export default src;
-}
-
-declare module "*.gltf" {
-    const src: string;
-    export default src;
-}
-
-declare module "*.glb" {
-    const src: string;
-    export default src;
-}
-
-declare module "*.exr" {
-    const src: string;
-    export default src;
-}
-
-declare module "*.hdr" {
-    const src: string;
-    export default src;
-}
 ```
