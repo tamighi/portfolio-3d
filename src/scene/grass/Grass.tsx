@@ -1,5 +1,7 @@
 import fragment from "@/assets/shaders/grass-fragment-shader.glsl";
 import vertex from "@/assets/shaders/grass-vertex-shader.glsl";
+import tileData from "@/assets/textures/tileData.jpg";
+import { useTexture } from "@react-three/drei";
 import { useFrame } from "@react-three/fiber";
 import React from "react";
 import * as THREE from "three";
@@ -49,6 +51,8 @@ const createGrassGeometry = () => {
 const Grass = () => {
   const geometry = React.useMemo(() => createGrassGeometry(), []);
 
+  const tileDataTexture = useTexture(tileData);
+
   const uniforms = React.useMemo(
     () => ({
       grassHeight: { value: GRASS_HEIGHT },
@@ -56,6 +60,7 @@ const Grass = () => {
       grassVertices: { value: GRASS_VERTICES },
       grassSegments: { value: GRASS_SEGMENTS },
       grassPatchSize: { value: GRASS_PATCH_SIZE },
+      tileDataTexture: { value: tileDataTexture },
       time: { value: 0 },
     }),
     [],
@@ -64,9 +69,7 @@ const Grass = () => {
   const materialRef = React.useRef<THREE.ShaderMaterial>(null);
 
   useFrame((state) => {
-    if (materialRef.current) {
-      materialRef.current.uniforms.time.value = state.clock.getElapsedTime();
-    }
+    uniforms.time.value = state.clock.getElapsedTime();
   });
 
   return (
@@ -83,4 +86,3 @@ const Grass = () => {
 };
 
 export default Grass;
-Grass;

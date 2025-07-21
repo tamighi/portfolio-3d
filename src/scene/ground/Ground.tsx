@@ -12,7 +12,7 @@ const Ground = () => {
   texture.wrapT = THREE.RepeatWrapping;
 
   useEffect(() => {
-    meshRef.current?.scale.setScalar(10);
+    meshRef.current?.scale.setScalar(100);
     meshRef.current?.rotateX(-Math.PI / 4);
   }, [meshRef]);
 
