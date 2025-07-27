@@ -5,6 +5,8 @@ uniform int grassSegments;
 uniform float grassPatchSize;
 uniform float time;
 
+varying float vHeightPercentage;
+
 #include "./utils/common.glsl";
 
 vec3 getBezierGrassCurve(float leanFactor, float heightPercentage) {
@@ -40,6 +42,7 @@ vec3 computeGrassGeometry(float hashValue) {
     y = curve.y * height;
     z = curve.z * height;
 
+    vHeightPercentage = heightPercentage;
     return vec3(x, y, z);
 }
 
