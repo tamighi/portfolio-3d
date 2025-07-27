@@ -86,3 +86,28 @@ void main() {
     gl_Position = projectionMatrix * viewMatrix * modelMatrix * vec4(grassLocalPosition, 1.0);
 }
 ```
+
+Tip the blade; depending on the height of the vertex, adapt the width.
+
+```glsl
+    float width = grassWidth * (easeOut(1.0 - heightPercentage, 2.0));
+    float x = width * (xSide - 0.5);
+```
+
+Add random rotations based on global grass position
+
+```glsl
+mat3 generateGrassMatrix(vec3 grassWorldPos) {
+    vec3 hashVal = hash(grassWorldPos);
+    float angle = remap(hashVal.x, -1.0, 1.0, -PI, PI);
+
+    mat3 rotationMatrix = rotateY(angle);
+    return rotationMatrix;
+}
+```
+
+```glsl
+    vec3 grassWorldPos = (modelMatrix * vec4(grassOffset, 1.0)).xyz;
+    mat3 grassMatrix = generateGrassMatrix(grassWorldPos);
+    vec3 grassLocalPosition = grassMatrix * grassGeometry + grassOffset;
+```

@@ -5,9 +5,9 @@ import * as THREE from "three";
 
 const GRASS_SEGMENTS = 6;
 const GRASS_VERTICES = (GRASS_SEGMENTS + 1) * 2;
-const NUM_GRASS = 10;
-const GRASS_WIDTH = 0.1;
-const GRASS_HEIGHT = 0.5;
+const NUM_GRASS = 16;
+const GRASS_WIDTH = 0.25;
+const GRASS_HEIGHT = 2;
 
 const createGrassGeometry = () => {
   const indices = [];
@@ -52,11 +52,10 @@ const Grass = ({ grassPatchSize = 1 }: Props) => {
   return (
     <mesh geometry={geometry}>
       <shaderMaterial
-        wireframe={true}
         uniforms={uniforms}
         vertexShader={vertex}
         fragmentShader={fragment}
-        side={THREE.FrontSide}
+        side={THREE.DoubleSide}
       />
     </mesh>
   );

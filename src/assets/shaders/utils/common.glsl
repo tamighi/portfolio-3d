@@ -1,3 +1,5 @@
+const float PI = 3.14159265358979323846;
+
 float inverseLerp(float v, float inMin, float inMax) {
     return (v - inMin) / (inMax - inMin);
 }
@@ -13,4 +15,22 @@ float saturate(float value) {
 vec2 quickHash(float x) {
     const vec2 k = vec2(127.1, 311.7);
     return fract(sin(vec2(x, x + 1.0) * k) * 43758.5453);
+}
+
+float easeOut(float x, float t) {
+    return 1.0 - pow(1.0 - x, t);
+}
+
+vec3 hash(vec3 p) {
+    p = fract(p * vec3(0.1031, 0.1030, 0.0973));
+    p += dot(p, p.yzx + 19.19);
+    return fract((p.xxy + p.yzz) * p.zyx);
+}
+
+mat3 rotateY(float theta) {
+    float c = cos(theta);
+    float s = sin(theta);
+    return mat3(c, 0.0, s,
+        0.0, 1.0, 0.0,
+        -s, 0.0, c);
 }
