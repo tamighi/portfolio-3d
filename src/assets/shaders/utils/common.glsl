@@ -34,3 +34,11 @@ mat3 rotateY(float theta) {
         0.0, 1.0, 0.0,
         -s, 0.0, c);
 }
+
+vec3 bezier(float t, vec3 p0, vec3 p1, vec3 p2, vec3 p3) {
+    float u = 1.0 - t;
+    return u * u * u * p0 +
+        3.0 * u * u * t * p1 +
+        3.0 * u * t * t * p2 +
+        t * t * t * p3;
+}

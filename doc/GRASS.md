@@ -5,8 +5,6 @@
 
 ## Implementation
 
-### Single blade
-
 Each blade will have multiple segments (= resolution).   
 Each segment will have 2 triangles (of 3 vertices). 
 
@@ -71,23 +69,21 @@ void main() {
 We can generate an offset based on the instance ID.
 
 ```glsl
-vec3 getBladeOffset() {
-    vec2 hashedInstanceID = quickHash(float(gl_InstanceID)) * 2.0 - 1.0; // Recenter
-    return vec3(hashedInstanceID.x, 0.0, hashedInstanceID.y) * (grassPatchSize / 2.0);
-}
-
 void main() {
-    vec3 grassOffset = getBladeOffset();
-    // Refactor of the above
-    vec3 bladeGeometry = computeBladeGeometry();
+    // Local to rendered geometry
+    vec2 hashedInstanceID = quickHash(float(gl_InstanceID)) * 2.0 - 1.0;
+    vec3 grassOffset = vec3(hashedInstanceID.x, 0.0, hashedInstanceID.y) * (grassPatchSize / 2.0);
 
-    vec3 grassLocalPosition = bladeGeometry + grassOffset;
+    // Refactor of the above
+    vec3 grassGeometry = computeGrassGeometry();
+
+    vec3 grassLocalPosition = grassGeometry + grassOffset;
 
     gl_Position = projectionMatrix * viewMatrix * modelMatrix * vec4(grassLocalPosition, 1.0);
 }
 ```
 
-Tip the blade; depending on the height of the vertex, adapt the width.
+Tip the grass; depending on the height of the vertex, adapt the width.
 
 ```glsl
     float width = grassWidth * (easeOut(1.0 - heightPercentage, 2.0));
@@ -97,9 +93,8 @@ Tip the blade; depending on the height of the vertex, adapt the width.
 Add random rotations based on global grass position
 
 ```glsl
-mat3 generateGrassMatrix(vec3 grassWorldPos) {
-    vec3 hashVal = hash(grassWorldPos);
-    float angle = remap(hashVal.x, -1.0, 1.0, -PI, PI);
+mat3 generateGrassMatrix(float hashValue) {
+    float angle = remap(hashValue, -1.0, 1.0, -PI, PI);
 
     mat3 rotationMatrix = rotateY(angle);
     return rotationMatrix;
@@ -107,7 +102,25 @@ mat3 generateGrassMatrix(vec3 grassWorldPos) {
 ```
 
 ```glsl
+    // Get global hash value
     vec3 grassWorldPos = (modelMatrix * vec4(grassOffset, 1.0)).xyz;
-    mat3 grassMatrix = generateGrassMatrix(grassWorldPos);
+    vec3 hashVal = hash(grassWorldPos);
+
+    mat3 grassMatrix = generateGrassMatrix(hashVal.x);
     vec3 grassLocalPosition = grassMatrix * grassGeometry + grassOffset;
+```
+
+Curve the grass blade
+```glsl
+vec3 computeGrassGeometry(float hashValue) {
+    // ...
+    // Add a curve
+    float leanFactor = remap(hashValue, -1.0, 1.0, 0.0, 0.5);
+    vec3 curve = getBezierGrassCurve(leanFactor, heightPercentage);
+
+    y = curve.y * height;
+    z = curve.z * height;
+
+    return vec3(x, y, z);
+}
 ```
