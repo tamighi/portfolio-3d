@@ -6,6 +6,7 @@ uniform float grassPatchSize;
 uniform float time;
 
 varying float vHeightPercentage;
+varying float vGrassX;
 
 #include "./utils/common.glsl";
 
@@ -43,6 +44,8 @@ vec3 computeGrassGeometry(float hashValue) {
     z = curve.z * height;
 
     vHeightPercentage = heightPercentage;
+    vGrassX = x;
+
     return vec3(x, y, z);
 }
 

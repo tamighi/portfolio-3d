@@ -141,3 +141,9 @@ void main() {
     gl_FragColor = vec4(pow(color, vec3(1.0 / 2.2)), 1.0);
 }
 ```
+
+Sense of depth (add darkness on the side)
+
+```glsl
+    vec3 color = mix(baseColor * 0.75, baseColor, smoothstep(0.125, 0.0, abs(vX)));
+```
