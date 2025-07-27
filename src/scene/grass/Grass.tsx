@@ -5,8 +5,7 @@ import * as THREE from "three";
 
 const GRASS_SEGMENTS = 6;
 const GRASS_VERTICES = (GRASS_SEGMENTS + 1) * 2;
-const GRASS_PATCH_SIZE = 1;
-const NUM_GRASS = 2;
+const NUM_GRASS = 10;
 const GRASS_WIDTH = 0.1;
 const GRASS_HEIGHT = 0.5;
 
@@ -32,7 +31,11 @@ const createGrassGeometry = () => {
   return geo;
 };
 
-const Grass = () => {
+type Props = {
+  grassPatchSize?: number;
+};
+
+const Grass = ({ grassPatchSize = 1 }: Props) => {
   const geometry = useMemo(() => createGrassGeometry(), []);
 
   const uniforms = useMemo(
@@ -41,7 +44,7 @@ const Grass = () => {
       grassWidth: { value: GRASS_WIDTH },
       grassVertices: { value: GRASS_VERTICES },
       grassSegments: { value: GRASS_SEGMENTS },
-      grassPatchSize: { value: GRASS_PATCH_SIZE },
+      grassPatchSize: { value: grassPatchSize },
       time: { value: 0 },
     }),
     [],

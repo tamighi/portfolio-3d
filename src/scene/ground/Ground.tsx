@@ -1,9 +1,16 @@
+import Grass from "../grass/Grass";
+
+const GROUND_SIZE = 5;
+
 const Ground = () => {
   return (
-    <mesh rotation-x={-Math.PI / 2}>
-      <planeGeometry args={[10, 10, 512, 512]} />
-      <meshBasicMaterial color="white" />
-    </mesh>
+    <>
+      <mesh rotation-x={-Math.PI / 2}>
+        <planeGeometry args={[GROUND_SIZE, GROUND_SIZE]} />
+        <meshBasicMaterial color="white" />
+      </mesh>
+      <Grass grassPatchSize={GROUND_SIZE} />
+    </>
   );
 };
 
