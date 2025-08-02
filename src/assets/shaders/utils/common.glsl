@@ -12,9 +12,11 @@ float saturate(float value) {
     return clamp(value, 0.0, 1.0);
 }
 
-vec2 quickHash(float x) {
-    const vec2 k = vec2(127.1, 311.7);
-    return fract(sin(vec2(x, x + 1.0) * k) * 43758.5453);
+vec2 quickHash(float p) {
+    vec2 r = vec2(
+            dot(vec2(p), vec2(17.43267, 23.8934543)),
+            dot(vec2(p), vec2(13.98342, 37.2435232)));
+    return fract(sin(r) * 1743.54892229);
 }
 
 float easeOut(float x, float t) {
