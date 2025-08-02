@@ -1,0 +1,74 @@
+import fragment from "@/assets/shaders/grass-fragment-shader.glsl";
+import vertex from "@/assets/shaders/grass-vertex-shader.glsl";
+import { useMemo } from "react";
+import * as THREE from "three";
+
+const GRASS_SEGMENTS = 6;
+const GRASS_VERTICES = (GRASS_SEGMENTS + 1) * 2;
+const NUM_GRASS = 16;
+const GRASS_WIDTH = 0.125;
+const GRASS_HEIGHT = 1;
+
+const createGrassGeometry = () => {
+  const indices = [];
+  for (let i = 0; i < GRASS_SEGMENTS; ++i) {
+    const vi = i * 2;
+
+    indices.push(vi + 0);
+    indices.push(vi + 1);
+    indices.push(vi + 2);
+
+    indices.push(vi + 2);
+    indices.push(vi + 1);
+    indices.push(vi + 3);
+
+    const fi = GRASS_VERTICES + vi;
+
+    indices.push(fi + 2);
+    indices.push(fi + 1);
+    indices.push(fi + 0);
+
+    indices.push(fi + 3);
+    indices.push(fi + 1);
+    indices.push(fi + 2);
+  }
+
+  const geo = new THREE.InstancedBufferGeometry();
+
+  geo.instanceCount = NUM_GRASS;
+  geo.setIndex(indices);
+
+  return geo;
+};
+
+type Props = {
+  grassPatchSize?: number;
+};
+
+const Grass = ({ grassPatchSize = 1 }: Props) => {
+  const geometry = useMemo(() => createGrassGeometry(), []);
+
+  const uniforms = useMemo(
+    () => ({
+      grassHeight: { value: GRASS_HEIGHT },
+      grassWidth: { value: GRASS_WIDTH },
+      grassVertices: { value: GRASS_VERTICES },
+      grassSegments: { value: GRASS_SEGMENTS },
+      grassPatchSize: { value: grassPatchSize },
+      time: { value: 0 },
+    }),
+    [],
+  );
+  return (
+    <mesh geometry={geometry}>
+      <shaderMaterial
+        uniforms={uniforms}
+        vertexShader={vertex}
+        fragmentShader={fragment}
+        side={THREE.DoubleSide}
+      />
+    </mesh>
+  );
+};
+
+export default Grass;
