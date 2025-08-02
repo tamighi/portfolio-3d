@@ -20,16 +20,14 @@ vec3 getBezierGrassCurve(float leanFactor, float heightPercentage) {
 }
 
 vec3 computeGrassGeometry(float hashValue) {
-    // X can only have 2 values, the vertex is either on the right or on the left side.
-    float xSide = float(gl_VertexID % 2);
-    // The y position is the index / 2.
-    float yPosition = float(gl_VertexID / 2);
+    int xSide = gl_VertexID % 2;
+    int yPos = (gl_VertexID - xSide) / 2;
 
     // Height percentage depends on the number of segments.
-    float heightPercentage = yPosition / float(grassSegments);
+    float heightPercentage = float(yPos) / float(grassSegments);
 
     float width = grassWidth * (easeOut(1.0 - heightPercentage, 2.0));
-    float x = width * (xSide - 0.5);
+    float x = width * (float(xSide) - 0.5);
 
     float height = grassHeight;
     float y = height * heightPercentage;

@@ -21,6 +21,14 @@ const createGrassGeometry = () => {
     indices.push(indexOffset + 2);
     indices.push(indexOffset + 1);
     indices.push(indexOffset + 3);
+
+    indices.push(indexOffset + 2);
+    indices.push(indexOffset + 1);
+    indices.push(indexOffset + 0);
+
+    indices.push(indexOffset + 3);
+    indices.push(indexOffset + 1);
+    indices.push(indexOffset + 2);
   }
 
   const geo = new THREE.InstancedBufferGeometry();
@@ -55,7 +63,6 @@ const Grass = ({ grassPatchSize = 1 }: Props) => {
         uniforms={uniforms}
         vertexShader={vertex}
         fragmentShader={fragment}
-        side={THREE.DoubleSide}
       />
     </mesh>
   );
