@@ -12,13 +12,6 @@ float saturate(float value) {
     return clamp(value, 0.0, 1.0);
 }
 
-vec2 quickHash(float p) {
-    vec2 r = vec2(
-            dot(vec2(p), vec2(17.43267, 23.8934543)),
-            dot(vec2(p), vec2(13.98342, 37.2435232)));
-    return fract(sin(r) * 1743.54892229);
-}
-
 float easeOut(float x, float t) {
     return 1.0 - pow(1.0 - x, t);
 }
@@ -43,4 +36,23 @@ vec3 bezier(float t, vec3 p0, vec3 p1, vec3 p2, vec3 p3) {
         3.0 * u * u * t * p1 +
         3.0 * u * t * t * p2 +
         t * t * t * p3;
+}
+
+uvec2 murmurHash21(uint src) {
+    const uint M = 0x5bd1e995u;
+    uvec2 h = uvec2(1190494759u, 2147483647u);
+    src *= M;
+    src ^= src >> 24u;
+    src *= M;
+    h *= M;
+    h ^= src;
+    h ^= h >> 13u;
+    h *= M;
+    h ^= h >> 15u;
+    return h;
+}
+
+vec2 hash21(float src) {
+    uvec2 h = murmurHash21(floatBitsToUint(src));
+    return uintBitsToFloat(h & 0x007fffffu | 0x3f800000u) - 1.0;
 }

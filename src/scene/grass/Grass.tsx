@@ -5,7 +5,7 @@ import * as THREE from "three";
 
 const GRASS_SEGMENTS = 6;
 const GRASS_VERTICES = (GRASS_SEGMENTS + 1) * 2;
-const NUM_GRASS = 16 * 1024;
+const NUM_GRASS = 16;
 const GRASS_WIDTH = 0.125;
 const GRASS_HEIGHT = 1;
 
