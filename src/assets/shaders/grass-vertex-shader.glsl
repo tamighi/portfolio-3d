@@ -44,8 +44,8 @@ mat3 generateGrassMatrix(float hashValue) {
 }
 
 vec3 getGrassHash() {
-    float id = float(gl_InstanceID);
-    return hash(vec3(id, id * 1.37, id * 3.11));
+    vec3 globalGrassId = (modelMatrix * vec4(float(gl_InstanceID))).xyz;
+    return hash(globalGrassId);
 }
 
 vec3 getGrassOffset(vec3 hashValue) {

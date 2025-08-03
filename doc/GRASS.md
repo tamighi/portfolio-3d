@@ -81,9 +81,9 @@ void main() {
 Generate a random hash based on local (instanceId) and global (model matrix) attributes
 
 ```glsl
-vec3 getGrassOffset(vec3 hashValue) {
-    hashValue = (modelMatrix * vec4(hashValue, 1.0)).xyz * 2.0 - 1.0;
-    return vec3(hashValue.y, 0.0, hashValue.z) * (grassPatchSize / 2.0);
+vec3 getGrassHash() {
+    vec3 globalGrassId = (modelMatrix * vec4(float(gl_InstanceID))).xyz;
+    return hash(globalGrassId);
 }
 ```
 
