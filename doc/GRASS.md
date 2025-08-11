@@ -13,7 +13,7 @@ The logic of the geometry indices and the vertex shader are thus dependents.
 
 It is better in term of memory and performance. It can however maybe lead to less flexibility (we will see).
 
-The geometry:
+### The geometry:
 
 ```ts
 const createGrassGeometry = () => {
@@ -52,7 +52,7 @@ const createGrassGeometry = () => {
 
 The vertex shader:
 
-Base geometry:
+### Base geometry:
 
 ```glsl
 vec3 computeGrassGeometry(out float heightPercentage) {
@@ -78,21 +78,22 @@ void main() {
 }
 ```
 
-Generate a random hash based on local (gl_InstanceID) and global (model matrix) attributes
+### Generate a random hash based on local (instance ID) and global (model matrix) attributes
 
 ```glsl
 vec3 getGrassHash() {
-    vec2 hashedInstanceID = hash21(float(gl_InstanceID)) * 2.0 - 1.0;
-    return hash((modelMatrix * vec4(hashedInstanceID, hashedInstanceID)).xyz);
+    vec2 hashedInstanceID = hash21(float(gl_InstanceID));
+    vec3 grassOffset = vec3(hashedInstanceID.x, 0.0, hashedInstanceID.y);
+    vec3 grassBladeWorldPos = (modelMatrix * vec4(grassOffset, 1.0)).xyz;
+    return hash(grassBladeWorldPos);
 }
 ```
 
-Generate offset based on hash
+### Generate random offset
 
 ```glsl
-vec3 getGrassOffset(vec3 hashValue) {
-    hashValue = (modelMatrix * vec4(hashValue, 1.0)).xyz * 2.0 - 1.0;
-    return vec3(hashValue.y, 0.0, hashValue.z) * (grassPatchSize / 2.0);
+vec3 getGrassOffset(vec3 hashVal) {
+    return vec3(hashVal.x, 0.0, hashVal.y) * grassPatchSize / 2.0;
 }
 
 //...
@@ -100,13 +101,13 @@ vec3 getGrassOffset(vec3 hashValue) {
     vec3 grassLocalPosition = grassGeometry + grassOffset;
 ```
 
-Tip the grass; depending on the height of the vertex, adapt the width.
+### Tip the grass; depending on the height of the vertex, adapt the width.
 
 ```glsl
     float width = grassWidth * (easeOut(1.0 - heightPercentage, 2.0));
 ```
 
-Add random rotations based on hash
+### Add random rotations based on hash
 
 ```glsl
 mat3 generateGrassMatrix(float hashValue) {
@@ -122,7 +123,7 @@ mat3 generateGrassMatrix(float hashValue) {
 
 ```
 
-Curve the grass blade
+### Curve the grass blade
 
 ```glsl
 vec3 getGrassCurve(float hashValue, float heightPercentage) {
@@ -137,7 +138,7 @@ vec3 computeGrassGeometry(float hashVal, out float heightPercentage) {
 }
 ```
 
-Basic coloring based on heightPercentage
+### Basic coloring based on heightPercentage
 
 ```glsl
 const vec3 BASE_COLOUR = vec3(0.1, 0.4, 0.04);
@@ -160,12 +161,75 @@ void main() {
 }
 ```
 
-Sense of depth (add darkness on the side)
+### Sense of depth (add darkness on the side)
 
 ```glsl
-    vGrassX = grassLocalPosition.x;
+    vGrassX = grassGeometry.x;
 ```
 
 ```glsl
-    vec3 color = mix(baseColor * 0.75, baseColor, smoothstep(0.125, 0.0, abs(vGrassX)));
+    vec3 baseColor = mix(vBaseColor * 0.75, vBaseColor, smoothstep(0.125, 0.0, abs(vGrassX)));
+```
+
+### Color variation based on noise
+
+```glsl
+vec3 getBaseColor(float heightPercentage, vec3 grassWorldPos) {
+    vec3 c1 = mix(BASE_COLOUR, TIP_COLOUR, heightPercentage);
+    vec3 c2 = mix(vec3(0.6, 0.6, 0.4), vec3(0.88, 0.87, 0.52), heightPercentage);
+    float noiseValue = noise(grassWorldPos * 0.1);
+    return mix(c1, c2, smoothstep(-0.4, 0.4, noiseValue));
+}
+```
+
+### Lightning based on surface normals
+
+#### Face identification
+
+1. Vertex ID differenciation for the faces
+
+```ts
+    let indexOffset = i * 2;
+
+    indices.push(indexOffset + 0);
+    indices.push(indexOffset + 1);
+    indices.push(indexOffset + 2);
+
+    indices.push(indexOffset + 2);
+    indices.push(indexOffset + 1);
+    indices.push(indexOffset + 3);
+
+    indexOffset += GRASS_VERTICES;
+
+    indices.push(indexOffset + 2);
+    indices.push(indexOffset + 1);
+    indices.push(indexOffset + 0);
+
+    indices.push(indexOffset + 3);
+    indices.push(indexOffset + 1);
+    indices.push(indexOffset + 2);
+```
+
+2. Take that into account in height and we can also check the side of the vertex:
+
+```glsl
+    heightPercentage = float((gl_VertexID % grassVertices) / 2) / float(grassSegments);
+    //...
+    int t = gl_VertexID % (grassVertices * 2);
+    float side = t >= grassVertices ? 1.0 : -1.0;
+```
+
+#### Hemilight
+
+```glsl
+    int t = gl_VertexID % (grassVertices * 2);
+    float zSide = t >= grassVertices ? 1.0 : -1.0;
+    mat2 curveRot90 = mat2(0.0, 1.0, -1.0, 0.0) * -zSide;
+    vec3 curveGrad = bezierGradient(heightPercentage, p1, p2, p3, p4);
+    vec3 grassLocalNormal = grassMatrix * vec3(0.0, curveRot90 * curveGrad.yz);
+    vNormal = normalize((modelMatrix * vec4(grassLocalNormal, 0.0)).xyz);
+```
+
+```glsl
+    vec3 ambientLighting = hemiLight(normalize(vNormal), GROUND_COLOR, SKY_COLOR);
 ```

@@ -16,10 +16,14 @@ float easeOut(float x, float t) {
     return 1.0 - pow(1.0 - x, t);
 }
 
-vec3 hash(vec3 p) {
-    p = fract(p * vec3(0.1031, 0.1030, 0.0973));
-    p += dot(p, p.yzx + 19.19);
-    return fract((p.xxy + p.yzz) * p.zyx);
+vec3 hash(vec3 p)
+{
+    p = vec3(
+            dot(p, vec3(127.1, 311.7, 74.7)),
+            dot(p, vec3(269.5, 183.3, 246.1)),
+            dot(p, vec3(113.5, 271.9, 124.6)));
+
+    return -1.0 + 2.0 * fract(sin(p) * 43758.5453123);
 }
 
 mat3 rotateY(float theta) {
@@ -36,6 +40,12 @@ vec3 bezier(float t, vec3 p0, vec3 p1, vec3 p2, vec3 p3) {
         3.0 * u * u * t * p1 +
         3.0 * u * t * t * p2 +
         t * t * t * p3;
+}
+
+vec3 bezierGradient(float t, vec3 P0, vec3 P1, vec3 P2, vec3 P3) {
+    return 3.0 * (1.0 - t) * (1.0 - t) * (P1 - P0) +
+        6.0 * (1.0 - t) * t * (P2 - P1) +
+        3.0 * t * t * (P3 - P2);
 }
 
 uvec2 murmurHash21(uint src) {
@@ -55,4 +65,33 @@ uvec2 murmurHash21(uint src) {
 vec2 hash21(float src) {
     uvec2 h = murmurHash21(floatBitsToUint(src));
     return uintBitsToFloat(h & 0x007fffffu | 0x3f800000u) - 1.0;
+}
+
+float noise(in vec3 p)
+{
+    vec3 i = floor(p);
+    vec3 f = fract(p);
+
+    vec3 u = f * f * (3.0 - 2.0 * f);
+
+    return mix(mix(mix(dot(hash(i + vec3(0.0, 0.0, 0.0)), f - vec3(0.0, 0.0, 0.0)),
+                dot(hash(i + vec3(1.0, 0.0, 0.0)), f - vec3(1.0, 0.0, 0.0)), u.x),
+            mix(dot(hash(i + vec3(0.0, 1.0, 0.0)), f - vec3(0.0, 1.0, 0.0)),
+                dot(hash(i + vec3(1.0, 1.0, 0.0)), f - vec3(1.0, 1.0, 0.0)), u.x), u.y),
+        mix(mix(dot(hash(i + vec3(0.0, 0.0, 1.0)), f - vec3(0.0, 0.0, 1.0)),
+                dot(hash(i + vec3(1.0, 0.0, 1.0)), f - vec3(1.0, 0.0, 1.0)), u.x),
+            mix(dot(hash(i + vec3(0.0, 1.0, 1.0)), f - vec3(0.0, 1.0, 1.0)),
+                dot(hash(i + vec3(1.0, 1.0, 1.0)), f - vec3(1.0, 1.0, 1.0)), u.x), u.y), u.z);
+}
+
+mat3 rotateAxis(vec3 axis, float angle) {
+    float c = cos(angle);
+    float s = sin(angle);
+    float oc = 1.0 - c;
+
+    return mat3(
+        oc * axis.x * axis.x + c, oc * axis.x * axis.y - axis.z * s, oc * axis.z * axis.x + axis.y * s,
+        oc * axis.x * axis.y + axis.z * s, oc * axis.y * axis.y + c, oc * axis.y * axis.z - axis.x * s,
+        oc * axis.z * axis.x - axis.y * s, oc * axis.y * axis.z + axis.x * s, oc * axis.z * axis.z + c
+    );
 }

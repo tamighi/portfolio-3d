@@ -1,18 +1,19 @@
 import fragment from "@/assets/shaders/grass-fragment-shader.glsl";
 import vertex from "@/assets/shaders/grass-vertex-shader.glsl";
+import { useFrame } from "@react-three/fiber";
 import { useMemo } from "react";
 import * as THREE from "three";
 
 const GRASS_SEGMENTS = 6;
 const GRASS_VERTICES = (GRASS_SEGMENTS + 1) * 2;
-const NUM_GRASS = 16;
+const NUM_GRASS = 16 * 1024;
 const GRASS_WIDTH = 0.125;
 const GRASS_HEIGHT = 1;
 
 const createGrassGeometry = () => {
   const indices = [];
   for (let i = 0; i < GRASS_SEGMENTS; ++i) {
-    const indexOffset = i * 2;
+    let indexOffset = i * 2;
 
     indices.push(indexOffset + 0);
     indices.push(indexOffset + 1);
@@ -21,6 +22,8 @@ const createGrassGeometry = () => {
     indices.push(indexOffset + 2);
     indices.push(indexOffset + 1);
     indices.push(indexOffset + 3);
+
+    indexOffset += GRASS_VERTICES;
 
     indices.push(indexOffset + 2);
     indices.push(indexOffset + 1);
@@ -57,6 +60,12 @@ const Grass = ({ grassPatchSize = 1 }: Props) => {
     }),
     [],
   );
+
+  useFrame((_, delta) => {
+    // update time uniform
+    uniforms.time.value += delta;
+  });
+
   return (
     <mesh geometry={geometry}>
       <shaderMaterial
