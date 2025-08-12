@@ -8,6 +8,10 @@ float remap(float v, float inMin, float inMax, float outMin, float outMax) {
     return outMin + (v - inMin) * (outMax - outMin) / (inMax - inMin);
 }
 
+#ifdef saturate
+#undef saturate
+#endif
+
 float saturate(float value) {
     return clamp(value, 0.0, 1.0);
 }

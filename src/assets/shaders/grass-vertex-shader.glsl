@@ -7,6 +7,7 @@ uniform float time;
 
 varying vec3 vBaseColor;
 varying float vGrassX;
+varying float vGrassY;
 varying vec3 vNormal;
 varying vec3 vWorldPosition;
 
@@ -25,7 +26,7 @@ vec3 computeGrassGeometry(out float heightPercentage) {
     return vec3(x, y, z);
 }
 
-mat3 generateGrassMatrix(float hashValue) {
+mat3 computeGrassMatrix(float hashValue) {
     float angle = remap(hashValue, -1.0, 1.0, -PI, PI);
 
     mat3 rotationMatrix = rotateY(angle);
@@ -103,19 +104,15 @@ void main() {
 
     // Angle
     float windLeanAngle = windStrength * 1.5 * heightPercentage * stiffness;
-    mat3 grassMatrix = rotateAxis(windAxis, windLeanAngle) * generateGrassMatrix(hashVal.z);
+    mat3 grassMatrix = rotateAxis(windAxis, windLeanAngle) * computeGrassMatrix(hashVal.z);
 
     // Curve
-    float randomLeanAnimation = noise(vec3(grassWorldPosition.xz, time * 4.0)) * (windStrength * 0.5 + 0.125);
+    float randomLeanAnimation = noise(vec3(grassWorldPosition.xz, time * 4.0)) * (windStrength * 0.5);
     float leanFactor = getLeanFactor(hashVal.x) + randomLeanAnimation;
 
     vec3 curve = computeCurve(heightPercentage, leanFactor);
     vec3 curveGrad = computeCurveTangent(heightPercentage, leanFactor);
     grassGeometry = vec3(grassGeometry.x, curve.y, curve.z);
-
-    // Position
-    vec3 grassLocalPosition = grassMatrix * grassGeometry + grassOffset;
-    gl_Position = projectionMatrix * viewMatrix * modelMatrix * vec4(grassLocalPosition, 1.0);
 
     // Compute normals
     vec3 grassLocalNormal = normalize(computeNormal(curveGrad, grassMatrix));
@@ -124,9 +121,26 @@ void main() {
     grassLocalNormal = mix(grassLocalNormal, vec3(0.0, 1.0, 0.0), distanceBlend);
     grassLocalNormal = normalize(grassLocalNormal);
 
+    // Position
+    vec3 grassLocalPosition = grassMatrix * grassGeometry + grassOffset;
+    // gl_Position = projectionMatrix * modelViewMatrix * vec4(grassLocalPosition, 1.0);
+
+    // TODO: refactor
+    vec4 mvPosition = modelViewMatrix * vec4(grassLocalPosition, 1.0);
+    vec3 viewDir = normalize(cameraPosition - grassWorldPosition);
+    float zSide = gl_VertexID >= grassVertices ? 1.0 : -1.0;
+    int xSide = gl_VertexID % 2;
+    vec3 grassFaceNormal = (grassMatrix * vec3(0.0, 0.0, -zSide));
+    float viewDotNormal = saturate(dot(grassFaceNormal, viewDir));
+    float viewSpaceThickenFactor = easeOut(1.0 - viewDotNormal, 4.0) * smoothstep(0.0, 0.1, viewDotNormal);
+    mvPosition.x += viewSpaceThickenFactor * grassGeometry.x * 0.5 * -zSide;
+    gl_Position = projectionMatrix * mvPosition;
+    //...
+
     // Varyings
     vBaseColor = getBaseColor(heightPercentage, grassWorldPosition);
     vWorldPosition = grassWorldPosition;
     vGrassX = grassGeometry.x;
+    vGrassY = grassGeometry.y;
     vNormal = grassLocalNormal;
 }
