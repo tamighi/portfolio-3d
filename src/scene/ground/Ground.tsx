@@ -1,6 +1,6 @@
 import Grass from "../grass/Grass";
 
-const GROUND_SIZE = 25;
+const GROUND_SIZE = 5;
 
 const Ground = () => {
   return (
