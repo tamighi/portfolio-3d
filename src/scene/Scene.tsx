@@ -1,14 +1,14 @@
 import { OrbitControls } from "@react-three/drei";
 import { useThree } from "@react-three/fiber";
 import { useEffect } from "react";
-import Ground from "./ground/Ground";
 import Sky from "./sky/Sky";
+import UpHill from "./UpHill";
 
 const useCameraSetup = () => {
   const { camera } = useThree();
 
   useEffect(() => {
-    camera.position.set(0.5, 1, 2);
+    camera.position.set(0.5, 3, 5);
     camera.lookAt(0, 0, 0);
     camera.updateProjectionMatrix();
   }, [camera]);
@@ -21,7 +21,7 @@ const Scene = () => {
     <scene>
       <OrbitControls makeDefault />
       <Sky />
-      <Ground />
+      <UpHill />
     </scene>
   );
 };
