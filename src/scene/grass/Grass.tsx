@@ -1,18 +1,15 @@
 import fragment from "@/assets/shaders/grass-fragment-shader.glsl";
 import vertex from "@/assets/shaders/grass-vertex-shader.glsl";
-import tileData from "@/assets/textures/tileData.jpg";
-import { useTexture } from "@react-three/drei";
 import { useFrame } from "@react-three/fiber";
 import { useMemo } from "react";
 import * as THREE from "three";
 
 const GRASS_SEGMENTS = 6;
 const GRASS_VERTICES = (GRASS_SEGMENTS + 1) * 2;
-const NUM_GRASS = 16 * 48;
 const GRASS_WIDTH = 0.125;
 const GRASS_HEIGHT = 1;
 
-const createGrassGeometry = () => {
+const createGrassGeometry = (numberOfBlades: number) => {
   const indices = [];
   for (let i = 0; i < GRASS_SEGMENTS; ++i) {
     let indexOffset = i * 2;
@@ -38,7 +35,7 @@ const createGrassGeometry = () => {
 
   const geo = new THREE.InstancedBufferGeometry();
 
-  geo.instanceCount = NUM_GRASS;
+  geo.instanceCount = numberOfBlades;
   geo.setIndex(indices);
 
   return geo;
@@ -46,11 +43,17 @@ const createGrassGeometry = () => {
 
 type Props = {
   grassPatchSize?: number;
+  density?: number;
+  maskTexture?: THREE.Texture;
 };
 
-const Grass = ({ grassPatchSize = 1 }: Props) => {
-  const geometry = useMemo(() => createGrassGeometry(), []);
-  const tileDataTexture = useTexture(tileData);
+const Grass = (props: Props) => {
+  const { grassPatchSize = 5, density = 30, maskTexture } = props;
+
+  const area = Math.pow(grassPatchSize, 2);
+  const numberOfBlades = area * density;
+
+  const geometry = useMemo(() => createGrassGeometry(numberOfBlades), []);
 
   const uniforms = useMemo(
     () => ({
@@ -59,7 +62,7 @@ const Grass = ({ grassPatchSize = 1 }: Props) => {
       grassVertices: { value: GRASS_VERTICES },
       grassSegments: { value: GRASS_SEGMENTS },
       grassPatchSize: { value: grassPatchSize },
-      tileDataTexture: { value: tileDataTexture },
+      tileDataTexture: { value: maskTexture },
       time: { value: 0 },
     }),
     [],

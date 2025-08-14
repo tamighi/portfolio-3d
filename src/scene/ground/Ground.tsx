@@ -1,20 +1,26 @@
 import * as THREE from "three";
 import Grass from "../grass/Grass";
 
-const GROUND_SIZE = 5;
-
 type Props = {
   position?: THREE.Vector3 | [x: number, y: number, z: number];
+  size?: number;
+  grassMaskTexture?: THREE.Texture;
 };
 
 const Ground = (props: Props = {}) => {
+  const { size = 5, position, grassMaskTexture } = props;
+
   return (
-    <group position={props.position}>
+    <group position={position}>
       <mesh rotation-x={-Math.PI / 2}>
-        <planeGeometry args={[GROUND_SIZE, GROUND_SIZE]} />
+        <planeGeometry args={[size, size]} />
         <meshBasicMaterial color="white" />
       </mesh>
-      <Grass grassPatchSize={GROUND_SIZE} />
+      <Grass
+        density={20}
+        maskTexture={grassMaskTexture}
+        grassPatchSize={size}
+      />
     </group>
   );
 };
