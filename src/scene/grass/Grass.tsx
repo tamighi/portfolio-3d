@@ -1,5 +1,7 @@
 import fragment from "@/assets/shaders/grass-fragment-shader.glsl";
 import vertex from "@/assets/shaders/grass-vertex-shader.glsl";
+import tileData from "@/assets/textures/tileData.jpg";
+import { useTexture } from "@react-three/drei";
 import { useFrame } from "@react-three/fiber";
 import { useMemo } from "react";
 import * as THREE from "three";
@@ -48,6 +50,7 @@ type Props = {
 
 const Grass = ({ grassPatchSize = 1 }: Props) => {
   const geometry = useMemo(() => createGrassGeometry(), []);
+  const tileDataTexture = useTexture(tileData);
 
   const uniforms = useMemo(
     () => ({
@@ -56,6 +59,7 @@ const Grass = ({ grassPatchSize = 1 }: Props) => {
       grassVertices: { value: GRASS_VERTICES },
       grassSegments: { value: GRASS_SEGMENTS },
       grassPatchSize: { value: grassPatchSize },
+      tileDataTexture: { value: tileDataTexture },
       time: { value: 0 },
     }),
     [],
