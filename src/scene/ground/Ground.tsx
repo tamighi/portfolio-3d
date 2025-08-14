@@ -16,11 +16,7 @@ const Ground = (props: Props = {}) => {
         <planeGeometry args={[size, size]} />
         <meshBasicMaterial color="white" />
       </mesh>
-      <Grass
-        density={20}
-        maskTexture={grassMaskTexture}
-        grassPatchSize={size}
-      />
+      <Grass density={20} maskTexture={grassMaskTexture} patchSize={size} />
     </group>
   );
 };

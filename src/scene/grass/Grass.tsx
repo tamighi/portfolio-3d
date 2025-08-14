@@ -42,15 +42,15 @@ const createGrassGeometry = (numberOfBlades: number) => {
 };
 
 type Props = {
-  grassPatchSize?: number;
+  patchSize?: number;
   density?: number;
   maskTexture?: THREE.Texture;
 };
 
 const Grass = (props: Props) => {
-  const { grassPatchSize = 5, density = 30, maskTexture } = props;
+  const { patchSize = 5, density = 30, maskTexture } = props;
 
-  const area = Math.pow(grassPatchSize, 2);
+  const area = Math.pow(patchSize, 2);
   const numberOfBlades = area * density;
 
   const geometry = useMemo(() => createGrassGeometry(numberOfBlades), []);
@@ -61,7 +61,7 @@ const Grass = (props: Props) => {
       grassWidth: { value: GRASS_WIDTH },
       grassVertices: { value: GRASS_VERTICES },
       grassSegments: { value: GRASS_SEGMENTS },
-      grassPatchSize: { value: grassPatchSize },
+      grassPatchSize: { value: patchSize },
       tileDataTexture: { value: maskTexture },
       time: { value: 0 },
     }),
