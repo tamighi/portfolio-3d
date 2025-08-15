@@ -4,7 +4,8 @@ uniform int grassVertices;
 uniform int grassSegments;
 uniform float grassPatchSize;
 uniform float time;
-uniform sampler2D tileDataTexture;
+uniform sampler2D maskTexture;
+uniform vec2 maskSize;
 
 varying vec3 vBaseColor;
 varying float vGrassX;
@@ -104,12 +105,13 @@ void main() {
     vec3 curve = computeCurve(heightPercentage, leanFactor);
     grassGeometry.yz = curve.yz;
 
-    // Data texture
-    vec4 tileData = texture2D(
-            tileDataTexture,
-            vec2(-grassWorldPosition.x, grassWorldPosition.z) / grassPatchSize * 0.5 + 0.5
+    // Grass mask
+    // TODO: position, size
+    vec4 mask = texture2D(
+            maskTexture,
+            vec2(-grassWorldPosition.x, grassWorldPosition.z) / maskSize.x + 0.5
         );
-    grassGeometry.xyz *= 1.0 - tileData.x;
+    grassGeometry.xyz *= 1.0 - mask.x;
 
     // Position
     vec3 grassLocalPosition = grassMatrix * grassGeometry + grassOffset;

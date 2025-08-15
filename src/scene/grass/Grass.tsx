@@ -47,9 +47,7 @@ type Props = {
   maskTexture?: THREE.Texture;
 };
 
-const Grass = (props: Props) => {
-  const { patchSize = 5, density = 30, maskTexture } = props;
-
+const Grass = ({ patchSize = 5, density = 30, maskTexture }: Props) => {
   const area = Math.pow(patchSize, 2);
   const numberOfBlades = area * density;
 
@@ -62,7 +60,8 @@ const Grass = (props: Props) => {
       grassVertices: { value: GRASS_VERTICES },
       grassSegments: { value: GRASS_SEGMENTS },
       grassPatchSize: { value: patchSize },
-      tileDataTexture: { value: maskTexture },
+      maskTexture: { value: maskTexture },
+      maskSize: { value: new THREE.Vector2(5, 5) },
       time: { value: 0 },
     }),
     [],
