@@ -9,7 +9,7 @@ const GRASS_VERTICES = (GRASS_SEGMENTS + 1) * 2;
 const GRASS_WIDTH = 0.125;
 const GRASS_HEIGHT = 1;
 
-const createGrassGeometry = (numberOfBlades: number) => {
+const createGrassGeometry = (numberOfBlades: number, patchSize: number) => {
   const indices = [];
   for (let i = 0; i < GRASS_SEGMENTS; ++i) {
     let indexOffset = i * 2;
@@ -38,6 +38,12 @@ const createGrassGeometry = (numberOfBlades: number) => {
   geo.instanceCount = numberOfBlades;
   geo.setIndex(indices);
 
+  const size = patchSize / 2;
+  geo.boundingSphere = new THREE.Sphere(
+    new THREE.Vector3(0, 0, 0),
+    Math.sqrt(size * size + size * size + 1 * 1),
+  );
+
   return geo;
 };
 
@@ -51,7 +57,10 @@ const Grass = ({ patchSize = 5, density = 30, maskTexture }: Props) => {
   const area = Math.pow(patchSize, 2);
   const numberOfBlades = area * density;
 
-  const geometry = useMemo(() => createGrassGeometry(numberOfBlades), []);
+  const geometry = useMemo(
+    () => createGrassGeometry(numberOfBlades, patchSize),
+    [],
+  );
 
   const uniforms = useMemo(
     () => ({
