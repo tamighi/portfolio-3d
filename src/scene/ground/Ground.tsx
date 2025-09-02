@@ -1,13 +1,12 @@
-import * as THREE from "three";
-import Grass from "../grass/Grass";
+import Grass, { type GrassProps } from "../grass/Grass";
 
-type Props = {
-  position?: THREE.Vector3 | [x: number, y: number, z: number];
+export type GroundProps = {
+  position: [x: number, y: number, z: number];
   size?: number;
-  grassMaskTexture?: THREE.Texture;
+  grassMaskTexture?: GrassProps["maskTexture"];
 };
 
-const Ground = (props: Props = {}) => {
+const Ground = (props: GroundProps) => {
   const { size = 5, position, grassMaskTexture } = props;
 
   return (

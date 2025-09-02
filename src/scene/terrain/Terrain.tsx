@@ -1,13 +1,12 @@
-import * as THREE from "three";
-import Ground from "../ground/Ground";
 import React from "react";
+import Ground, { type GroundProps } from "../ground/Ground";
 
 const PATCH_SIZE = 5;
 
 export type TerrainProps = {
-  position: THREE.Vector3 | [x: number, y: number, z: number];
-  size: THREE.Vector2 | [x: number, y: number];
-  grassMaskTexture?: THREE.Texture;
+  position: [x: number, y: number, z: number];
+  size: [x: number, y: number];
+  grassMaskTexture?: GroundProps["grassMaskTexture"];
 };
 
 const Terrain = ({ size, position, grassMaskTexture }: TerrainProps) => {
@@ -29,7 +28,12 @@ const Terrain = ({ size, position, grassMaskTexture }: TerrainProps) => {
   return (
     <group position={position}>
       {positionArray.map((pos, i) => (
-        <Ground key={i} position={pos} grassMaskTexture={grassMaskTexture} />
+        <Ground
+          key={i}
+          position={pos}
+          size={PATCH_SIZE}
+          grassMaskTexture={grassMaskTexture}
+        />
       ))}
     </group>
   );

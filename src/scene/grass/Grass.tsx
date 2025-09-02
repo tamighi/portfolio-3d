@@ -47,13 +47,13 @@ const createGrassGeometry = (numberOfBlades: number, patchSize: number) => {
   return geo;
 };
 
-type Props = {
+export type GrassProps = {
   patchSize?: number;
   density?: number;
   maskTexture?: THREE.Texture;
 };
 
-const Grass = ({ patchSize = 5, density = 30, maskTexture }: Props) => {
+const Grass = ({ patchSize = 5, density = 30, maskTexture }: GrassProps) => {
   const area = Math.pow(patchSize, 2);
   const numberOfBlades = area * density;
 
