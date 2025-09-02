@@ -4,17 +4,13 @@ import React from "react";
 
 const PATCH_SIZE = 5;
 
-type Props = {
-  position?: THREE.Vector3 | [x: number, y: number, z: number];
-  size?: THREE.Vector2 | [x: number, y: number];
+export type TerrainProps = {
+  position: THREE.Vector3 | [x: number, y: number, z: number];
+  size: THREE.Vector2 | [x: number, y: number];
   grassMaskTexture?: THREE.Texture;
 };
 
-const Terrain = ({
-  size = [3, 3],
-  position = [0, 0, 0],
-  grassMaskTexture,
-}: Props = {}) => {
+const Terrain = ({ size, position, grassMaskTexture }: TerrainProps) => {
   const positionArray = React.useMemo(() => {
     const [countX, countZ] = size;
     const positions: [number, number, number][] = [];

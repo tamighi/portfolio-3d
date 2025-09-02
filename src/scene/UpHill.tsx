@@ -1,11 +1,21 @@
 import tileData from "@/assets/textures/tileData.jpg";
 import { useTexture } from "@react-three/drei";
-import Terrain from "./terrain/Terrain";
+import React from "react";
+import Terrain, { type TerrainProps } from "./terrain/Terrain";
 
 const UpHill = () => {
   const tileDataTexture = useTexture(tileData);
 
-  return <Terrain grassMaskTexture={tileDataTexture} />;
+  const position = React.useMemo<TerrainProps["position"]>(() => [0, 0, 0], []);
+  const size = React.useMemo<TerrainProps["size"]>(() => [3, 3], []);
+
+  return (
+    <Terrain
+      grassMaskTexture={tileDataTexture}
+      position={position}
+      size={size}
+    />
+  );
 };
 
 export default UpHill;
