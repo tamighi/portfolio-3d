@@ -1,8 +1,10 @@
 import React from "react";
 
-const SettingsContext = React.createContext<{
+export type SettingsContextType = {
   settings: object;
   setSettings: React.Dispatch<React.SetStateAction<object>>;
-} | null>(null);
+};
+
+const SettingsContext = React.createContext<SettingsContextType | null>(null);
 
 export default SettingsContext;

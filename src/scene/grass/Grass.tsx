@@ -3,6 +3,7 @@ import vertex from "@/assets/shaders/grass-vertex-shader.glsl";
 import { useFrame } from "@react-three/fiber";
 import { useMemo } from "react";
 import * as THREE from "three";
+import useSettings from "../../hooks/useSettings";
 
 const GRASS_SEGMENTS = 6;
 const GRASS_VERTICES = (GRASS_SEGMENTS + 1) * 2;
@@ -56,6 +57,11 @@ export type GrassProps = {
 const Grass = ({ patchSize = 5, density = 30, maskTexture }: GrassProps) => {
   const area = Math.pow(patchSize, 2);
   const numberOfBlades = area * density;
+
+  const { grassHeight, grassWidth } = useSettings({
+    grassWidth: GRASS_WIDTH,
+    grassHeight: GRASS_HEIGHT,
+  });
 
   const geometry = useMemo(
     () => createGrassGeometry(numberOfBlades, patchSize),
