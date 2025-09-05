@@ -3,6 +3,7 @@ import { useThree } from "@react-three/fiber";
 import { useEffect } from "react";
 import Sky from "./sky/Sky";
 import UpHill from "./UpHill";
+import useSettings from "../hooks/useSettings";
 
 const useCameraSetup = () => {
   const { camera } = useThree();
@@ -14,8 +15,16 @@ const useCameraSetup = () => {
   }, [camera]);
 };
 
+const GRASS_WIDTH = 0.125;
+const GRASS_HEIGHT = 1;
+
 const Scene = () => {
   useCameraSetup();
+
+  const { grassHeight, grassWidth } = useSettings({
+    grassWidth: GRASS_WIDTH,
+    grassHeight: GRASS_HEIGHT,
+  });
 
   return (
     <scene>

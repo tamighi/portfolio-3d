@@ -9,7 +9,9 @@ const useSettings = <T extends object>(values: T): T => {
 
   const { settings, setSettings } = settingsContext;
 
-  setSettings((old) => ({ ...values, ...old }));
+  React.useEffect(() => {
+    setSettings((old) => ({ ...values, ...old }));
+  }, []);
 
   return settings as T;
 };
