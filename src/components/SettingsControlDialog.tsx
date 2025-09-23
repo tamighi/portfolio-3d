@@ -1,6 +1,6 @@
 import React from "react";
 import SettingsContext from "../contexts/SettingsContext";
-import { Slider } from "@mui/material";
+import Slider from "./Slider";
 
 const useSettings = () => {
   const settingsContext = React.useContext(SettingsContext);
@@ -56,17 +56,10 @@ const SettingsControlDialog = () => {
 
   return (
     <div className="fixed top-20 right-20 bg-white z-50 p-2 rounded-sm">
-      <div className="flex flex-col w-20">
+      <div className="flex flex-col w-28">
         {Object.entries(internalSettings).map(([k, v], i) => (
           <div key={i}>
-            <Slider
-              marks
-              value={v.value}
-              min={v.min}
-              max={v.max}
-              step={v.step}
-              onChange={(e) => onValueChange(k, (e.target as any).value)}
-            />
+            <Slider value={v.value} onChange={(v) => onValueChange(k, v)} />
             <span>{v.value}</span>
           </div>
         ))}
