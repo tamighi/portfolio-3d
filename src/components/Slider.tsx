@@ -18,14 +18,16 @@ const Slider = ({ value, onChange }: SliderProps) => {
   const options = React.useMemo(() => getSliderParameters(value), []);
 
   return (
-    <MuiSlider
-      marks
-      value={value}
-      min={options.min}
-      max={options.max}
-      step={options.step}
-      onChange={(e) => onChange?.((e.target as any).value)}
-    />
+    <div className="w-24">
+      <MuiSlider
+        marks
+        value={value}
+        min={options.min}
+        max={options.max}
+        step={options.step}
+        onChange={(e) => onChange?.((e.target as any).value)}
+      />
+    </div>
   );
 };
 

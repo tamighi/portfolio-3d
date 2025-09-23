@@ -22,7 +22,7 @@ const Scene = () => {
   useCameraSetup();
 
   const { grassHeight, grassWidth } = useSettings({
-    grassWidth: GRASS_WIDTH,
+    grassWidth: { value: GRASS_WIDTH, label: "Grass width" },
     grassHeight: GRASS_HEIGHT,
   });
 
@@ -30,7 +30,6 @@ const Scene = () => {
     <scene>
       <OrbitControls makeDefault />
       <Sky />
-      <UpHill />
     </scene>
   );
 };

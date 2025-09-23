@@ -1,6 +1,7 @@
 import React from "react";
 import SettingsContext from "../contexts/SettingsContext";
 import Slider from "./Slider";
+import type { Setting } from "../hooks/useSettings";
 
 const useSettings = () => {
   const settingsContext = React.useContext(SettingsContext);
@@ -11,42 +12,12 @@ const useSettings = () => {
   return settingsContext;
 };
 
-type InternalSettings = {
-  [K: string]: {
-    value: number;
-    baseValue: number;
-    min: number;
-    max: number;
-    step: number;
-  };
-};
-
-const getSliderParameters = (startValue: number) => {
-  const min = startValue - Math.abs(startValue);
-  const max = startValue + Math.abs(startValue);
-  const step = Math.abs(startValue / 5);
-
-  return { min, max, step };
+const isSettingType = (v: unknown): v is Setting<any> => {
+  return typeof v === "object" && v !== null && "value" in v;
 };
 
 const SettingsControlDialog = () => {
   const { setSettings, settings } = useSettings();
-
-  const internalSettings = React.useMemo(
-    () =>
-      Object.entries(settings).reduce(
-        (prev, [k, v]) => ({
-          ...prev,
-          [k]: {
-            value: v,
-            baseValue: v,
-            ...getSliderParameters(v),
-          },
-        }),
-        {} as InternalSettings,
-      ),
-    [settings],
-  );
 
   const onValueChange = React.useCallback(
     (key: string, value: number) =>
@@ -56,11 +27,15 @@ const SettingsControlDialog = () => {
 
   return (
     <div className="fixed top-20 right-20 bg-white z-50 p-2 rounded-sm">
-      <div className="flex flex-col w-28">
-        {Object.entries(internalSettings).map(([k, v], i) => (
-          <div key={i}>
-            <Slider value={v.value} onChange={(v) => onValueChange(k, v)} />
-            <span>{v.value}</span>
+      <div className="flex flex-col">
+        {Object.entries(settings).map(([k, v], i) => (
+          <div key={i} className="flex gap-2">
+            <span>{isSettingType(v) ? v.label : k}</span>
+            <Slider
+              value={isSettingType(v) ? v.value : v}
+              onChange={(v) => onValueChange(k, v)}
+            />
+            <span className="w-8">{isSettingType(v) ? v.value : v}</span>
           </div>
         ))}
       </div>
