@@ -1,18 +1,18 @@
 import { Canvas } from "@react-three/fiber";
+import { ControlsProviders } from "@tamighi/reco-panel";
 import InProgress from "./components/InProgress";
 import "./index.css";
-import SettingsProvider from "./providers/SettingsProvider";
 import Scene from "./scene/Scene";
 
 const App = () => {
   return (
     <div className="w-screen h-screen">
-      <SettingsProvider>
+      <ControlsProviders>
         <InProgress />
         <Canvas>
           <Scene />
         </Canvas>
-      </SettingsProvider>
+      </ControlsProviders>
     </div>
   );
 };

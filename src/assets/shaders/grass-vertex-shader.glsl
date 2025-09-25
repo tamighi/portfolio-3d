@@ -47,9 +47,9 @@ vec3 getBaseColor(float heightPercentage, vec3 grassWorldPos) {
 
 void getCurveControlPoints(float leanFactor, out vec3 p0, out vec3 p1, out vec3 p2, out vec3 p3) {
     p0 = vec3(0.0);
-    p1 = vec3(0.0, 0.33, 0.0);
-    p2 = vec3(0.0, 0.66, 0.0);
-    p3 = vec3(0.0, cos(leanFactor), sin(leanFactor));
+    p1 = vec3(0.0, grassHeight / 3.0, 0.0);
+    p2 = vec3(0.0, grassHeight / 3.0, 0.0);
+    p3 = vec3(0.0, cos(leanFactor) * grassHeight, sin(leanFactor));
 }
 
 vec3 computeCurve(float t, float leanFactor) {

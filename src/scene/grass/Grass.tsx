@@ -1,7 +1,8 @@
 import fragment from "@/assets/shaders/grass-fragment-shader.glsl";
 import vertex from "@/assets/shaders/grass-vertex-shader.glsl";
 import { useFrame } from "@react-three/fiber";
-import { useMemo } from "react";
+import { useControls } from "@tamighi/reco-panel";
+import React from "react";
 import * as THREE from "three";
 
 const GRASS_SEGMENTS = 6;
@@ -57,12 +58,12 @@ const Grass = ({ patchSize = 5, density = 30, maskTexture }: GrassProps) => {
   const area = Math.pow(patchSize, 2);
   const numberOfBlades = area * density;
 
-  const geometry = useMemo(
+  const geometry = React.useMemo(
     () => createGrassGeometry(numberOfBlades, patchSize),
     [],
   );
 
-  const uniforms = useMemo(
+  const uniforms = React.useMemo(
     () => ({
       grassHeight: { value: GRASS_HEIGHT },
       grassWidth: { value: GRASS_WIDTH },
@@ -80,6 +81,16 @@ const Grass = ({ patchSize = 5, density = 30, maskTexture }: GrassProps) => {
     // update time uniform
     uniforms.time.value += delta;
   });
+
+  const { grassHeight, grassWidth } = useControls({
+    grassWidth: { value: GRASS_WIDTH, label: "Grass width" },
+    grassHeight: GRASS_HEIGHT,
+  });
+
+  React.useEffect(() => {
+    uniforms.grassHeight.value = grassHeight;
+    uniforms.grassWidth.value = grassWidth;
+  }, [grassWidth, grassHeight]);
 
   return (
     <mesh geometry={geometry}>
