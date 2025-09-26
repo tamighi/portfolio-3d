@@ -1,8 +1,8 @@
+import InProgress from "@/components/InProgress";
+import Scene from "@/scene/Scene";
 import { Canvas } from "@react-three/fiber";
 import { ControlsProviders } from "@tamighi/reco-panel";
-import InProgress from "./components/InProgress";
 import "./index.css";
-import Scene from "./scene/Scene";
 
 const App = () => {
   return (

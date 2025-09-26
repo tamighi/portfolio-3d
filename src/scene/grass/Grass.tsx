@@ -1,9 +1,9 @@
 import fragment from "@/assets/shaders/grass-fragment-shader.glsl";
 import vertex from "@/assets/shaders/grass-vertex-shader.glsl";
+import { useWindStrength } from "@/hooks/useWind";
 import { useControls } from "@tamighi/reco-panel";
 import React from "react";
 import * as THREE from "three";
-import { useWindStrength } from "../../hooks/useWind";
 
 const GRASS_SEGMENTS = 6;
 const GRASS_VERTICES = (GRASS_SEGMENTS + 1) * 2;
