@@ -1,9 +1,9 @@
 import fragment from "@/assets/shaders/grass-fragment-shader.glsl";
 import vertex from "@/assets/shaders/grass-vertex-shader.glsl";
-import { useFrame } from "@react-three/fiber";
 import { useControls } from "@tamighi/reco-panel";
 import React from "react";
 import * as THREE from "three";
+import { useWindStrength } from "../../hooks/useWind";
 
 const GRASS_SEGMENTS = 6;
 const GRASS_VERTICES = (GRASS_SEGMENTS + 1) * 2;
@@ -72,15 +72,14 @@ const Grass = ({ patchSize = 5, density = 30, maskTexture }: GrassProps) => {
       grassPatchSize: { value: patchSize },
       maskTexture: { value: maskTexture },
       maskSize: { value: new THREE.Vector2(5, 5) },
-      time: { value: 0 },
+      windStrength: { value: 0 },
     }),
     [],
   );
 
-  useFrame((_, delta) => {
-    // update time uniform
-    uniforms.time.value += delta;
-  });
+  useWindStrength(
+    (windStrength) => (uniforms.windStrength.value = windStrength),
+  );
 
   const { grassHeight, grassWidth } = useControls({
     grassWidth: { value: GRASS_WIDTH, label: "Grass width" },

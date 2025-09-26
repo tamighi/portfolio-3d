@@ -1,9 +1,9 @@
+uniform float windStrength;
 uniform float grassHeight;
 uniform float grassWidth;
 uniform int grassVertices;
 uniform int grassSegments;
 uniform float grassPatchSize;
-uniform float time;
 uniform sampler2D maskTexture;
 uniform vec2 maskSize;
 
@@ -90,7 +90,7 @@ void main() {
     vec3 hashVal = hash(grassWorldPosition);
 
     // Wind TODO: understand & refactor
-    float windStrength = noise(vec3(grassWorldPosition.xz * 0.05, 0.0) + time);
+    float windStrength = noise(vec3(grassWorldPosition.xz * 0.05, 0.0) + windStrength);
     float windAngle = 0.0;
     vec3 windAxis = vec3(cos(windAngle), 0.0, sin(windAngle));
     float stiffness = 1.0;
@@ -100,7 +100,7 @@ void main() {
     mat3 grassMatrix = rotateAxis(windAxis, windLeanAngle) * computeGrassMatrix(hashVal.z);
 
     // Curve TODO: understand & refactor
-    float randomLeanAnimation = noise(vec3(grassWorldPosition.xz, time * 4.0)) * (windStrength * 0.5);
+    float randomLeanAnimation = noise(vec3(grassWorldPosition.xz, windStrength * 0.5));
     float leanFactor = remap(hashVal.x, -1.0, 1.0, 0.0, 0.5) + randomLeanAnimation;
     vec3 curve = computeCurve(heightPercentage, leanFactor);
     grassGeometry.yz = curve.yz;
