@@ -1,11 +1,11 @@
 import { useFrame } from "@react-three/fiber";
-import { useControls } from "@tamighi/reco-panel";
+import { useStorageControls } from "@tamighi/reco-panel";
 import React from "react";
 
 export const useWindStrength = (callback: (wind: number) => void) => {
   const [windStrength, setWindStrength] = React.useState(0);
 
-  const { enableWind } = useControls({
+  const { enableWind } = useStorageControls({
     enableWind: true,
   });
 
