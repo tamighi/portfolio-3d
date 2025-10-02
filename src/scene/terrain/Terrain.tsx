@@ -1,5 +1,5 @@
 import React from "react";
-import Ground from "../ground/Ground";
+import Ground, { type GroundProps } from "../ground/Ground";
 
 const PATCH_SIZE = 5;
 
