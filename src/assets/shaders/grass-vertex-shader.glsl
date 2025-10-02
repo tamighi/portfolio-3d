@@ -12,6 +12,7 @@ varying float vGrassX;
 varying float vGrassY;
 varying vec3 vNormal;
 varying vec3 vWorldPosition;
+varying float vGrassHeight;
 
 #include "./utils/common.glsl";
 
@@ -138,4 +139,5 @@ void main() {
     vGrassX = grassGeometry.x;
     vGrassY = grassGeometry.y;
     vNormal = normalize(grassLocalNormal);
+    vGrassHeight = grassHeight;
 }

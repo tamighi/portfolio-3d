@@ -3,9 +3,7 @@ import { useControls } from "@tamighi/reco-panel";
 
 export const useWindStrength = (callback: (wind: number) => void) => {
   const { enableWind } = useControls(
-    {
-      enableWind: true,
-    },
+    { enableWind: { value: true, label: "Enable wind" } },
     { store: true },
   );
 

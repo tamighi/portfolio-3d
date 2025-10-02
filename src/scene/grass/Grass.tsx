@@ -82,8 +82,18 @@ const Grass = ({ patchSize = 5, density = 30, maskTexture }: GrassProps) => {
   );
 
   const { grassHeight, grassWidth } = useControls({
-    grassWidth: { value: GRASS_WIDTH, label: "Grass width" },
-    grassHeight: GRASS_HEIGHT,
+    grassWidth: {
+      value: GRASS_WIDTH,
+      label: "Grass width",
+      min: 0.06,
+      max: 0.25,
+    },
+    grassHeight: {
+      value: GRASS_HEIGHT,
+      label: "Grass height",
+      min: 0.75,
+      max: 1.6,
+    },
   });
 
   React.useEffect(() => {

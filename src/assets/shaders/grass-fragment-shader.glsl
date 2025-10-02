@@ -5,6 +5,7 @@ varying float vGrassX;
 varying float vGrassY;
 varying vec3 vNormal;
 varying vec3 vWorldPosition;
+varying float vGrassHeight;
 
 #include "./utils/common.glsl";
 
@@ -50,7 +51,7 @@ void main() {
     vec3 diffuseLighting = lambertLight(normal, viewDir, lightDir, lightColour);
     vec3 ambientLighting = hemiLight(normal, GROUND_COLOR, SKY_COLOR);
     vec3 specular = phongSpecular(normal, lightDir, viewDir);
-    float ao = remap(pow(vGrassY, 2.0), 0.0, 1.0, 0.125, 1.0);
+    float ao = remap(pow(vGrassY, 2.0), 0.0, vGrassHeight, 0.125, 1.0);
 
     vec3 baseColor = mix(vBaseColor * 0.75, vBaseColor, smoothstep(0.125, 0.0, abs(vGrassX)));
 
