@@ -1,5 +1,4 @@
-import fragment from "@/assets/shaders/sky-fragment-shader.glsl?raw";
-import vertex from "@/assets/shaders/sky-vertex-shader.glsl?raw";
+import { skyFragmentShader, skyVertexShader } from "@/assets";
 import * as THREE from "three";
 
 const Sky = () => {
@@ -8,8 +7,8 @@ const Sky = () => {
       <sphereGeometry args={[50, 32, 15]} />
 
       <shaderMaterial
-        vertexShader={vertex}
-        fragmentShader={fragment}
+        vertexShader={skyVertexShader}
+        fragmentShader={skyFragmentShader}
         side={THREE.BackSide}
       />
     </mesh>

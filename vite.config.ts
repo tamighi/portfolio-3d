@@ -17,6 +17,7 @@ export default defineConfig({
     },
   },
   base: "/portfolio-3d",
+  assetsInclude: ["**/*.glb"],
   server: {
     fs: {
       allow: [".", path.resolve(__dirname, linkedLibPath)],

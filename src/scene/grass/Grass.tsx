@@ -1,5 +1,4 @@
-import fragment from "@/assets/shaders/grass-fragment-shader.glsl";
-import vertex from "@/assets/shaders/grass-vertex-shader.glsl";
+import { grassFragmentShader, grassVertexShader } from "@/assets";
 import { useWindStrength } from "@/hooks/useWind";
 import { useControls } from "@tamighi/reco-panel";
 import React from "react";
@@ -105,8 +104,8 @@ const Grass = ({ patchSize = 5, density = 30, maskTexture }: GrassProps) => {
     <mesh geometry={geometry}>
       <shaderMaterial
         uniforms={uniforms}
-        vertexShader={vertex}
-        fragmentShader={fragment}
+        vertexShader={grassVertexShader}
+        fragmentShader={grassFragmentShader}
       />
     </mesh>
   );

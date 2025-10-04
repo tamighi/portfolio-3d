@@ -57,7 +57,7 @@ npm i @react-three/drei @react-three/fiber three r3f-perf leva
 npm i -D @types/three vite-plugin-glsl
 ```
 
-Allowing glsl file imports:
+Allowing file imports:
 ```ts filename="vite-env.d.ts"
 declare module "*.glsl" {
   const src: string;
