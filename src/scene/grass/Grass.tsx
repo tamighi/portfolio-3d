@@ -5,7 +5,7 @@ import { useControls } from "@tamighi/reco-panel";
 import React from "react";
 import * as THREE from "three";
 
-const GRASS_SEGMENTS = 6;
+const GRASS_SEGMENTS = 3;
 const GRASS_VERTICES = (GRASS_SEGMENTS + 1) * 2;
 const GRASS_WIDTH = 0.125;
 const GRASS_HEIGHT = 1;

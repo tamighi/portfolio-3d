@@ -8,9 +8,8 @@ export const useWindStrength = (callback: (wind: number) => void) => {
   );
 
   useFrame(({ clock }) => {
-    const windStrength = enableWind
-      ? 0.5 + Math.sin(clock.elapsedTime * 0.5) / 2
-      : 0;
+    if (!enableWind) return;
+    const windStrength = 0.5 + Math.sin(clock.elapsedTime * 0.5) / 2;
     callback(windStrength);
   });
 };
