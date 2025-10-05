@@ -3,18 +3,10 @@ import Plain from "./Plain";
 import Sky from "./Sky";
 import Mountain from "./Mountain";
 import Sun from "./Sun";
-
-// const useCameraSetup = () => {
-//   const { camera } = useThree();
-//
-//   useEffect(() => {
-//     camera.position.set(0, 0, 0);
-//     camera.updateProjectionMatrix();
-//   }, [camera]);
-// };
+import usePerfLogger from "@/hooks/usePerfLogger";
 
 const Scene = () => {
-  // useCameraSetup();
+  usePerfLogger();
 
   return (
     <scene>
