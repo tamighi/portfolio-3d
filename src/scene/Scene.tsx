@@ -1,9 +1,9 @@
+import usePerfLogger from "@/hooks/usePerfLogger";
 import { OrbitControls } from "@react-three/drei";
+import Mountain from "./Mountain";
 import Plain from "./Plain";
 import Sky from "./Sky";
-import Mountain from "./Mountain";
 import Sun from "./Sun";
-import usePerfLogger from "@/hooks/usePerfLogger";
 
 const Scene = () => {
   usePerfLogger();
