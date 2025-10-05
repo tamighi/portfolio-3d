@@ -1,4 +1,4 @@
-import Grass, { type GrassProps } from "../grass/Grass";
+import Grass, { type GrassProps } from "./Grass";
 
 export type GroundProps = {
   position: [x: number, y: number, z: number];

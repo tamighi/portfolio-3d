@@ -1,7 +1,7 @@
 import { tileDataTexture } from "@/assets/textures";
 import { useTexture } from "@react-three/drei";
 import React from "react";
-import Ground, { type GroundProps } from "./ground/Ground";
+import Ground, { type GroundProps } from "./Ground";
 
 const Plain = () => {
   const grassMaskTexture = useTexture(tileDataTexture);

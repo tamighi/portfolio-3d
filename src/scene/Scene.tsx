@@ -1,7 +1,8 @@
 import { OrbitControls } from "@react-three/drei";
 import Plain from "./Plain";
-import Sky from "./sky/Sky";
-import Mountain from "./mountain/Mountain";
+import Sky from "./Sky";
+import Mountain from "./Mountain";
+import Sun from "./Sun";
 
 // const useCameraSetup = () => {
 //   const { camera } = useThree();
@@ -18,6 +19,7 @@ const Scene = () => {
   return (
     <scene>
       <OrbitControls makeDefault />
+      <Sun />
       <Mountain />
       <Plain />
       <Sky />
