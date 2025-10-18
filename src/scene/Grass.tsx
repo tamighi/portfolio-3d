@@ -5,13 +5,20 @@ import React from "react";
 import * as THREE from "three";
 
 const GRASS_SEGMENTS = 6;
-const GRASS_VERTICES = (GRASS_SEGMENTS + 1) * 2;
 const GRASS_WIDTH = 0.125;
 const GRASS_HEIGHT = 1;
 
-const createGrassGeometry = (numberOfBlades: number, patchSize: number) => {
+const getGrassVerticeNumber = (grassSegments: number) => {
+  return (grassSegments + 1) * 2;
+};
+
+const createGrassGeometry = (
+  numberOfBlades: number,
+  patchSize: number,
+  grassSegments: number,
+) => {
   const indices = [];
-  for (let i = 0; i < GRASS_SEGMENTS; ++i) {
+  for (let i = 0; i < grassSegments; ++i) {
     let indexOffset = i * 2;
 
     indices.push(indexOffset + 0);
@@ -22,7 +29,7 @@ const createGrassGeometry = (numberOfBlades: number, patchSize: number) => {
     indices.push(indexOffset + 1);
     indices.push(indexOffset + 3);
 
-    indexOffset += GRASS_VERTICES;
+    indexOffset += getGrassVerticeNumber(grassSegments);
 
     indices.push(indexOffset + 2);
     indices.push(indexOffset + 1);
@@ -57,30 +64,7 @@ const Grass = ({ patchSize = 5, density = 30, maskTexture }: GrassProps) => {
   const area = Math.pow(patchSize, 2);
   const numberOfBlades = area * density;
 
-  const geometry = React.useMemo(
-    () => createGrassGeometry(numberOfBlades, patchSize),
-    [],
-  );
-
-  const uniforms = React.useMemo(
-    () => ({
-      grassHeight: { value: GRASS_HEIGHT },
-      grassWidth: { value: GRASS_WIDTH },
-      grassVertices: { value: GRASS_VERTICES },
-      grassSegments: { value: GRASS_SEGMENTS },
-      grassPatchSize: { value: patchSize },
-      maskTexture: { value: maskTexture },
-      maskSize: { value: new THREE.Vector2(5, 5) },
-      windStrength: { value: 0 },
-    }),
-    [],
-  );
-
-  useWindStrength(
-    (windStrength) => (uniforms.windStrength.value = windStrength),
-  );
-
-  const { grassHeight, grassWidth } = useControls({
+  const { grassHeight, grassWidth, grassSegments } = useControls({
     grassWidth: {
       value: GRASS_WIDTH,
       label: "Grass width",
@@ -93,12 +77,44 @@ const Grass = ({ patchSize = 5, density = 30, maskTexture }: GrassProps) => {
       min: 0.75,
       max: 1.6,
     },
+    grassSegments: {
+      value: GRASS_SEGMENTS,
+      label: "Resolution",
+      min: 1,
+      max: 10,
+      step: 1,
+    },
   });
+
+  const geometry = React.useMemo(
+    () => createGrassGeometry(numberOfBlades, patchSize, grassSegments),
+    [grassSegments],
+  );
+
+  const uniforms = React.useMemo(
+    () => ({
+      grassHeight: { value: grassHeight },
+      grassWidth: { value: grassWidth },
+      grassVertices: { value: getGrassVerticeNumber(grassSegments) },
+      grassSegments: { value: grassSegments },
+      grassPatchSize: { value: patchSize },
+      maskTexture: { value: maskTexture },
+      maskSize: { value: new THREE.Vector2(5, 5) },
+      windStrength: { value: 0 },
+    }),
+    [],
+  );
+
+  useWindStrength(
+    (windStrength) => (uniforms.windStrength.value = windStrength),
+  );
 
   React.useEffect(() => {
     uniforms.grassHeight.value = grassHeight;
     uniforms.grassWidth.value = grassWidth;
-  }, [grassWidth, grassHeight]);
+    uniforms.grassSegments.value = grassSegments;
+    uniforms.grassVertices.value = getGrassVerticeNumber(grassSegments);
+  }, [grassWidth, grassHeight, grassSegments]);
 
   return (
     <mesh geometry={geometry}>
