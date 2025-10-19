@@ -1,6 +1,6 @@
 import usePerfLogger from "@/hooks/usePerfLogger";
 import { OrbitControls } from "@react-three/drei";
-import Plain from "./Plain";
+import Grass from "./Grass";
 
 const Scene = () => {
   usePerfLogger();
@@ -8,7 +8,7 @@ const Scene = () => {
   return (
     <scene>
       <OrbitControls makeDefault />
-      <Plain />
+      <Grass patchSize={500} />
     </scene>
   );
 };
