@@ -8,7 +8,7 @@ const Scene = () => {
   return (
     <scene>
       <OrbitControls makeDefault />
-      <Grass patchSize={500} />
+      <Grass patchSize={5} />
     </scene>
   );
 };

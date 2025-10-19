@@ -1,12 +1,8 @@
 import { grassFragmentShader, grassVertexShader } from "@/assets";
+import { useGrassControls } from "@/contexts/GrassControlContext";
 import { useWindStrength } from "@/hooks/useWind";
-import { useControls } from "@tamighi/reco-panel";
 import React from "react";
 import * as THREE from "three";
-
-const GRASS_SEGMENTS = 6;
-const GRASS_WIDTH = 0.125;
-const GRASS_HEIGHT = 1;
 
 const getGrassVerticeNumber = (grassSegments: number) => {
   return (grassSegments + 1) * 2;
@@ -64,27 +60,7 @@ const Grass = ({ patchSize = 5, density = 30, maskTexture }: GrassProps) => {
   const area = Math.pow(patchSize, 2);
   const numberOfBlades = area * density;
 
-  const { grassHeight, grassWidth, grassSegments } = useControls({
-    grassWidth: {
-      value: GRASS_WIDTH,
-      label: "Grass width",
-      min: 0.06,
-      max: 0.25,
-    },
-    grassHeight: {
-      value: GRASS_HEIGHT,
-      label: "Grass height",
-      min: 0.75,
-      max: 1.6,
-    },
-    grassSegments: {
-      value: GRASS_SEGMENTS,
-      label: "Resolution",
-      min: 1,
-      max: 10,
-      step: 1,
-    },
-  });
+  const { grassHeight, grassWidth, grassSegments } = useGrassControls();
 
   const geometry = React.useMemo(
     () => createGrassGeometry(numberOfBlades, patchSize, grassSegments),
