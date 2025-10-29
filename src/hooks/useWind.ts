@@ -1,11 +1,8 @@
+import { useWindControls } from "@/contexts/WindControlContext";
 import { useFrame } from "@react-three/fiber";
-import { useControls } from "@tamighi/reco-panel";
 
 export const useWindStrength = (callback: (wind: number) => void) => {
-  const { enableWind } = useControls(
-    { enableWind: { value: true, label: "Enable wind" } },
-    { store: true },
-  );
+  const { enableWind } = useWindControls();
 
   useFrame(({ clock }) => {
     if (!enableWind) return;
