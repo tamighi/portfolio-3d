@@ -1,11 +1,15 @@
-import { useControls, type UseControlsReturn } from "@tamighi/reco-panel";
+import {
+  useControls,
+  type ControlInputRecords,
+  type ControlValues,
+} from "@tamighi/reco-panel";
 import { createContext, useContext } from "react";
 
 const windControls = {
-  enableWind: { value: true, label: "Enable wind" },
-};
+  enableWind: { value: true, label: "Enable wind", store: true },
+} satisfies ControlInputRecords;
 
-const WindControlsContext = createContext<UseControlsReturn<
+const WindControlsContext = createContext<ControlValues<
   typeof windControls
 > | null>(null);
 
@@ -14,7 +18,7 @@ export const WindControlsProvider = ({
 }: {
   children?: React.ReactNode;
 }) => {
-  const controls = useControls(windControls, { store: true });
+  const controls = useControls(windControls, { folder: "wind" });
 
   return <WindControlsContext value={controls}>{children}</WindControlsContext>;
 };
