@@ -1,6 +1,25 @@
 import { ControlsProvider as NativeControlsProvider } from "@tamighi/reco-panel";
-import { GrassControlsProvider } from "./GrassControlContext";
-import { WindControlsProvider } from "./WindControlContext";
+
+const grassControls = {
+  grassWidth: { value: 0.1, min: 0.06, max: 0.25, label: "Grass width" },
+  grassHeight: { value: 1.0, min: 0.75, max: 1.6, label: "Grass height" },
+  grassSegments: { value: 5, min: 1, max: 10, step: 1, label: "Resolution" },
+};
+
+const windControls = {
+  enableWind: { value: true, label: "Enable wind", store: true },
+};
+
+const controls = {
+  grass: grassControls,
+  wind: windControls,
+};
+
+declare module "@tamighi/reco-panel" {
+  interface RegisterControlTree {
+    controlTree: typeof controls;
+  }
+}
 
 export const ControlsProvider = ({
   children,
@@ -8,10 +27,8 @@ export const ControlsProvider = ({
   children?: React.ReactNode;
 }) => {
   return (
-    <NativeControlsProvider>
-      <GrassControlsProvider>
-        <WindControlsProvider>{children}</WindControlsProvider>
-      </GrassControlsProvider>
+    <NativeControlsProvider controls={controls}>
+      {children}
     </NativeControlsProvider>
   );
 };

@@ -67,6 +67,8 @@ const Grass = ({ patchSize = 5, density = 30, maskTexture }: GrassProps) => {
     [grassSegments],
   );
 
+  console.log(grassHeight);
+
   const uniforms = React.useMemo(
     () => ({
       grassHeight: { value: grassHeight },

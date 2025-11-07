@@ -5,10 +5,6 @@ import {
 } from "@tamighi/reco-panel";
 import { createContext, useContext } from "react";
 
-const windControls = {
-  enableWind: { value: true, label: "Enable wind", store: true },
-} satisfies ControlInputRecords;
-
 const WindControlsContext = createContext<ControlValues<
   typeof windControls
 > | null>(null);
