@@ -16,7 +16,7 @@ const controls = {
 };
 
 declare module "@tamighi/reco-panel" {
-  interface RegisterControlTree {
+  interface Register {
     controlTree: typeof controls;
   }
 }
