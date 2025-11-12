@@ -1,6 +1,6 @@
 import { grassFragmentShader, grassVertexShader } from "@/assets";
 import { useWindStrength } from "@/hooks/useWind";
-import { useControls } from "@tamighi/reco-panel";
+import { useControlValues } from "@tamighi/reco-panel";
 import React from "react";
 import * as THREE from "three";
 
@@ -60,7 +60,7 @@ const Grass = ({ patchSize = 5, density = 30, maskTexture }: GrassProps) => {
   const area = Math.pow(patchSize, 2);
   const numberOfBlades = area * density;
 
-  const { grassHeight, grassWidth, grassSegments } = useControls("grass");
+  const { grassHeight, grassWidth, grassSegments } = useControlValues("grass");
 
   const geometry = React.useMemo(
     () => createGrassGeometry(numberOfBlades, patchSize, grassSegments),

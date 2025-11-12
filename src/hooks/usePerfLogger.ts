@@ -2,7 +2,7 @@ import { useFrame, useThree } from "@react-three/fiber";
 import { useRef } from "react";
 
 const usePerfLogger = (interval = 2000) => {
-  const { gl } = useThree();
+  const gl = useThree((state) => state.gl);
   const frameCount = useRef(0);
   const lastTime = useRef(performance.now());
 

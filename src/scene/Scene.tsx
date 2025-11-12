@@ -4,7 +4,7 @@ import Grass from "./Grass";
 
 const Scene = () => {
   usePerfLogger();
-
+  console.log("🎬 Scene rendered");
   return (
     <scene>
       <OrbitControls makeDefault />
