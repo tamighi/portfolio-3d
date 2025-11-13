@@ -31,16 +31,19 @@ const createGrassGeometry = (
   for (let i = 0; i < grassSegments; ++i) {
     let indexOffset = i * 2;
 
+    // tri 1
     indices.push(indexOffset + 0);
     indices.push(indexOffset + 1);
     indices.push(indexOffset + 2);
 
+    // tri 2
     indices.push(indexOffset + 2);
     indices.push(indexOffset + 1);
     indices.push(indexOffset + 3);
 
     indexOffset += getGrassVerticesNumber(grassSegments);
 
+    // face 2
     indices.push(indexOffset + 2);
     indices.push(indexOffset + 1);
     indices.push(indexOffset + 0);
@@ -64,3 +67,37 @@ const createGrassGeometry = (
   return geo;
 };
 ```
+
+### Base geometry:
+
+TODO: Explain here
+
+```glsl
+vec3 computeGrassGeometry() {
+    int xSide = gl_VertexID % 2;
+    float heightPercentage = float((gl_VertexID % grassVertices) / 2) / float(grassSegments);
+
+    float width = grassWidth * easeOut(1.0 - heightPercentage, 2.0);
+
+    float x = width * (float(xSide) - 0.5);
+    float y = heightPercentage * grassHeight;
+    float z = 0.0;
+
+    return vec3(x, y, z);
+}
+```
+
+### Generate a random hash
+
+Will allow us to have randomness for each instance. 
+Based on local (instance ID) and global (model matrix) attributes.
+
+```glsl
+vec3 getGrassHash() {
+    vec2 hashedInstanceID = hash21(float(gl_InstanceID));
+    vec3 grassOffset = vec3(hashedInstanceID.x, 0.0, hashedInstanceID.y);
+    vec3 grassBladeWorldPos = (modelMatrix * vec4(grassOffset, 1.0)).xyz;
+    return hash(grassBladeWorldPos);
+}
+```
+
