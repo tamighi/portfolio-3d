@@ -10,9 +10,15 @@ const windControls = {
   enableWind: { value: true, label: "Enable wind", store: true },
 };
 
+const groundControls = {
+  patchSize: { value: 5, label: "Size", min: 1, max: 50, step: 1 },
+  density: { value: 30, label: "Density", min: 0, max: 50, step: 1 },
+};
+
 const controls = {
   grass: grassControls,
   wind: windControls,
+  ground: groundControls,
 };
 
 declare module "@tamighi/reco-panel" {

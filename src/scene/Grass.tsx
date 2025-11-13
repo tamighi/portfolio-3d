@@ -57,15 +57,16 @@ export type GrassProps = {
 };
 
 const Grass = ({ patchSize = 5, density = 30, maskTexture }: GrassProps) => {
-  const area = Math.pow(patchSize, 2);
-  const numberOfBlades = area * density;
+  const area = React.useMemo(() => Math.pow(patchSize, 2), [patchSize]);
+  const numberOfBlades = React.useMemo(() => area * density, [area, density]);
 
   const { grassHeight, grassWidth, grassSegments } = useControlValues("grass");
 
   const geometry = React.useMemo(
     () => createGrassGeometry(numberOfBlades, patchSize, grassSegments),
-    [grassSegments],
+    [grassSegments, numberOfBlades, patchSize],
   );
+  console.log("Grass rendered");
 
   const uniforms = React.useMemo(
     () => ({
