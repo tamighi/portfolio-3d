@@ -66,7 +66,6 @@ const Grass = ({ patchSize = 5, density = 30, maskTexture }: GrassProps) => {
     () => createGrassGeometry(numberOfBlades, patchSize, grassSegments),
     [grassSegments, numberOfBlades, patchSize],
   );
-  console.log("Grass rendered");
 
   const uniforms = React.useMemo(
     () => ({
@@ -90,8 +89,9 @@ const Grass = ({ patchSize = 5, density = 30, maskTexture }: GrassProps) => {
     uniforms.grassHeight.value = grassHeight;
     uniforms.grassWidth.value = grassWidth;
     uniforms.grassSegments.value = grassSegments;
+    uniforms.grassPatchSize.value = patchSize;
     uniforms.grassVertices.value = getGrassVerticeNumber(grassSegments);
-  }, [grassWidth, grassHeight, grassSegments]);
+  }, [grassWidth, grassHeight, grassSegments, patchSize]);
 
   return (
     <mesh geometry={geometry}>

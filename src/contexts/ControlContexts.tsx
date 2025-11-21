@@ -11,7 +11,7 @@ const windControls = {
 };
 
 const groundControls = {
-  patchSize: { value: 5, label: "Size", min: 1, max: 50, step: 1 },
+  patchSize: { value: 5, label: "Size", min: 1, max: 10, step: 1 },
   density: { value: 30, label: "Density", min: 0, max: 50, step: 1 },
 };
 

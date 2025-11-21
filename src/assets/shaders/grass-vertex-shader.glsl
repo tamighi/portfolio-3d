@@ -1,7 +1,10 @@
 #include "./utils/common.glsl";
 
+uniform int grassPatchSize;
+
 uniform int grassVertices;
 uniform int grassSegments;
+
 uniform float grassHeight;
 uniform float grassWidth;
 
@@ -18,7 +21,6 @@ vec3 computeGrassGeometry() {
     return vec3(x, y, z);
 }
 
-// TODO: Hash based on gl_instanceID and modelMatrix
 vec3 getGrassHash() {
     vec2 hashedInstanceID = hash21(float(gl_InstanceID));
     vec3 grassOffset = vec3(hashedInstanceID.x, 0.0, hashedInstanceID.y);
@@ -26,11 +28,17 @@ vec3 getGrassHash() {
     return hash(grassBladeWorldPos);
 }
 
-// TODO: Try
+vec3 getGrassOffset(vec3 hashVal) {
+    return vec3(hashVal.x, 0.0, hashVal.y) * float(grassPatchSize) / 2.0;
+}
+
 void main() {
     vec3 hash = getGrassHash();
 
     vec3 grassGeometry = computeGrassGeometry();
+    vec3 offset = getGrassOffset(hash);
 
-  gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+    vec3 finalPosition = grassGeometry + offset;
+
+    gl_Position = projectionMatrix * viewMatrix * vec4(finalPosition, 1.0);
 }

@@ -70,7 +70,15 @@ const createGrassGeometry = (
 
 ### Base geometry:
 
-TODO: Explain here
+Position based on the geometry indices (gl_VertexID): 
+- y: 
+    - Normalize the number (gl_VertexID % grassVertices)
+    - Divide by 2 (2 vertices heightPercentage, one for each side)
+    - Divide by number of segments to normalize height.
+    - Transform percentage to height.
+- x: 
+    - The width + we join the vertices at the top.
+    - Place and center based on the side on X axis.
 
 ```glsl
 vec3 computeGrassGeometry() {
@@ -101,3 +109,11 @@ vec3 getGrassHash() {
 }
 ```
 
+### Local position
+
+
+```glsl
+vec3 getGrassOffset(vec3 hashVal) {
+    return vec3(hashVal.x, 0.0, hashVal.y) * grassPatchSize / 2.0;
+}
+```
