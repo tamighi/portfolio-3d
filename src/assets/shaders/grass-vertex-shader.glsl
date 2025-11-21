@@ -10,6 +10,13 @@ uniform int grassSegments;
 uniform float grassHeight;
 uniform float grassWidth;
 
+mat3 getGrassMatrix(float hashValue) {
+    float angle = remap(hashValue, -1.0, 1.0, -PI, PI);
+
+    mat3 rotationMatrix = rotateY(angle);
+    return rotationMatrix;
+}
+
 vec3 getGrassCurve(float hashValue, float heightPercentage) {
     float leanFactor = remap(hashValue, -1.0, 1.0, 0.0, 0.5);
 
@@ -21,7 +28,7 @@ vec3 getGrassCurve(float hashValue, float heightPercentage) {
     return bezier(heightPercentage, p0, p1, p2, p3);
 }
 
-vec3 computeGrassGeometry(float hash) {
+vec3 getGrassGeometry(float hash) {
     int xSide = gl_VertexID % 2;
     float heightPercentage = float((gl_VertexID % grassVertices) / 2) / float(grassSegments);
     float width = grassWidth * easeOut(1.0 - heightPercentage, 2.0);
@@ -49,10 +56,11 @@ vec3 getGrassOffset(vec3 hashVal) {
 void main() {
     vec3 hash = getGrassHash();
 
-    vec3 grassGeometry = computeGrassGeometry(rehash(hash.x, 1.0));
+    vec3 grassGeometry = getGrassGeometry(rand(hash.x, 1.0));
     vec3 offset = getGrassOffset(hash);
+    mat3 grassMatrix = getGrassMatrix(rand(hash.x, 2.0));
 
-    vec3 finalPosition = grassGeometry + offset;
+    vec3 finalPosition = grassGeometry * grassMatrix + offset;
 
     gl_Position = projectionMatrix * viewMatrix * vec4(finalPosition, 1.0);
 }

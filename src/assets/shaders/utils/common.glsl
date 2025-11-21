@@ -100,9 +100,6 @@ mat3 rotateAxis(vec3 axis, float angle) {
     );
 }
 
-float rehash(float x, float seed) {
-    x = fract(x * 0.1031 + seed * 0.0973);
-    x *= x + 33.33 + seed * 0.1234;
-    x *= x + x;
-    return fract(x);
+float rand(float x, float seed) {
+    return fract(sin((x + seed * 17.0) * 78.233) * 43758.5453);
 }
