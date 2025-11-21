@@ -68,33 +68,6 @@ const createGrassGeometry = (
 };
 ```
 
-### Base geometry:
-
-Position based on the geometry indices (gl_VertexID): 
-- y: 
-    - Normalize the number (gl_VertexID % grassVertices)
-    - Divide by 2 (2 vertices heightPercentage, one for each side)
-    - Divide by number of segments to normalize height.
-    - Transform percentage to height.
-- x: 
-    - The width + we join the vertices at the top.
-    - Place and center based on the side on X axis.
-
-```glsl
-vec3 computeGrassGeometry() {
-    int xSide = gl_VertexID % 2;
-    float heightPercentage = float((gl_VertexID % grassVertices) / 2) / float(grassSegments);
-
-    float width = grassWidth * easeOut(1.0 - heightPercentage, 2.0);
-
-    float x = width * (float(xSide) - 0.5);
-    float y = heightPercentage * grassHeight;
-    float z = 0.0;
-
-    return vec3(x, y, z);
-}
-```
-
 ### Random hash
 
 Will allow us to have randomness for each instance. 
@@ -116,15 +89,17 @@ float rand(float x, float seed) {
 }
 ```
 
-### Offset
+### Base geometry:
 
-```glsl
-vec3 getGrassOffset(vec3 hashVal) {
-    return vec3(hashVal.x, 0.0, hashVal.y) * grassPatchSize / 2.0;
-}
-```
-
-### Curve
+Position based on the geometry indices (gl_VertexID): 
+- y: 
+    - Normalize the number (gl_VertexID % grassVertices)
+    - Divide by 2 (2 vertices heightPercentage, one for each side)
+    - Divide by number of segments to normalize height.
+    - Transform percentage to height.
+- x: 
+    - The width + we join the vertices at the top.
+    - Place and center based on the side on X axis.
 
 ```glsl
 vec3 getGrassCurve(float hashValue, float heightPercentage) {
@@ -136,6 +111,28 @@ vec3 getGrassCurve(float hashValue, float heightPercentage) {
     vec3 p3 = vec3(0.0, cos(leanFactor) * grassHeight, sin(leanFactor));
 
     return bezier(heightPercentage, p0, p1, p2, p3);
+}
+
+vec3 getGrassGeometry(float hash) {
+    int xSide = gl_VertexID % 2;
+    float heightPercentage = float((gl_VertexID % grassVertices) / 2) / float(grassSegments);
+    float width = grassWidth * easeOut(1.0 - heightPercentage, 2.0);
+    
+    vec3 curve = getGrassCurve(hash, heightPercentage);
+
+    float x = width * (float(xSide) - 0.5);
+    float y = curve.y;
+    float z = curve.z;
+
+    return vec3(x, y, z);
+}
+```
+
+### Offset
+
+```glsl
+vec3 getGrassOffset(vec3 hashVal) {
+    return vec3(hashVal.x, 0.0, hashVal.y) * grassPatchSize / 2.0;
 }
 ```
 
