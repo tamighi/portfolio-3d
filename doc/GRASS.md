@@ -95,7 +95,7 @@ vec3 computeGrassGeometry() {
 }
 ```
 
-### Generate a random hash
+### Random hash
 
 Will allow us to have randomness for each instance. 
 Based on local (instance ID) and global (model matrix) attributes.
@@ -109,11 +109,29 @@ vec3 getGrassHash() {
 }
 ```
 
-### Local position
-
+### Offset
 
 ```glsl
 vec3 getGrassOffset(vec3 hashVal) {
     return vec3(hashVal.x, 0.0, hashVal.y) * grassPatchSize / 2.0;
 }
 ```
+
+### Curve
+
+Note that the hashValue has to be rehashed, it creates weird results if the same value is reused
+
+```glsl
+vec3 getGrassCurve(float hashValue, float heightPercentage) {
+    float leanFactor = remap(hashValue, -1.0, 1.0, 0.0, 0.5);
+
+    vec3 p0 = vec3(0.0);
+    vec3 p1 = vec3(0.0, grassHeight / 3.0, 0.0);
+    vec3 p2 = vec3(0.0, grassHeight / 3.0, 0.0);
+    vec3 p3 = vec3(0.0, cos(leanFactor) * grassHeight, sin(leanFactor));
+
+    return bezier(heightPercentage, p0, p1, p2, p3);
+}
+```
+
+### Angle

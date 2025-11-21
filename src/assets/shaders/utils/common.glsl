@@ -99,3 +99,10 @@ mat3 rotateAxis(vec3 axis, float angle) {
         oc * axis.z * axis.x - axis.y * s, oc * axis.y * axis.z + axis.x * s, oc * axis.z * axis.z + c
     );
 }
+
+float rehash(float x, float seed) {
+    x = fract(x * 0.1031 + seed * 0.0973);
+    x *= x + 33.33 + seed * 0.1234;
+    x *= x + x;
+    return fract(x);
+}
